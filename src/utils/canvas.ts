@@ -16,26 +16,58 @@ let hasMove = false;
 
 // initialize
 const canvas = document.createElement('canvas');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const canvasWidth = window.innerWidth;
+const canvasHeight = window.innerHeight;
+canvas.width = canvasWidth;
+canvas.height = canvasHeight;
 window.document.body.appendChild(canvas);
 
-export const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 export const rc = rough.canvas(canvas);
 export const generator = rc.generator;
+const backgroundGridGap = 50;
+export let scale = 100;
 
 export const setDrawType = (type: string) => {
     drawType = type;
 }
 
-const repaint = () => {
+export const setCanvasScale = (newScale: number) => {
+    ctx.scale(newScale/scale, newScale/scale);
+    scale = newScale;
+    repaint();
+}
 
+const drawBackground = (gap: number) => {
+
+    // draw background color
+    ctx.fillStyle = "#F2F2F2";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw background grid
+    ctx.translate(0.5, 0.5);
+    ctx.strokeStyle = "#e0e0e0";
+    for (let i = gap; i < canvasWidth; i+=gap) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, canvasHeight);
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvasWidth, i);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    ctx.translate(-0.5, -0.5);
+}
+
+
+const repaint = () => {
     if(drawType === LINEARPATH) {
         repaintLinearPath();
         return;
     }
-
     ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+    drawBackground(backgroundGridGap);
     canvasContent.forEach(c => {
         if(c.type === LINEARPATH) {
             paintLinearPath(c);
@@ -60,6 +92,7 @@ const handlePointerDown = (event: PointerEvent) => {
 const handlePointerMove = (() => {
     let isThrottle = false;
     return (event: PointerEvent) => {
+
         if (!hasDown || isThrottle) {
             return;
         }
@@ -96,6 +129,13 @@ const handlePointerUp = () => {
 }
 
 
+
+drawBackground(backgroundGridGap);
 window.addEventListener('pointerdown', handlePointerDown);
 window.addEventListener('pointermove', handlePointerMove);
 window.addEventListener('pointerup', handlePointerUp);
+// window.addEventListener('wheel', (e) => {
+//     e.preventDefault();
+// }, {
+//     passive: false,
+// });
