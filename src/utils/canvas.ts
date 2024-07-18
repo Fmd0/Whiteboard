@@ -12,12 +12,14 @@ export const canvasContent: CanvasContentType[] = [];
 let drawType = RECTANGLE;
 let hasDown = false;
 let hasMove = false;
+// const canvasWidth = 6000;
+// const canvasHeight = 4000;
+const canvasWidth = window.innerWidth;
+const canvasHeight = window.innerHeight;
 
 
 // initialize
 const canvas = document.createElement('canvas');
-const canvasWidth = window.innerWidth;
-const canvasHeight = window.innerHeight;
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 window.document.body.appendChild(canvas);
@@ -27,6 +29,15 @@ export const rc = rough.canvas(canvas);
 export const generator = rc.generator;
 const backgroundGridGap = 50;
 export let scale = 100;
+export const translateX = Math.floor(canvas.width/2);
+export const translateY = Math.floor(canvas.height/2);
+
+
+
+window.ctx = ctx;
+// ctx.scale(2,2)
+ctx.translate(translateX, translateY);
+
 
 export const setDrawType = (type: string) => {
     drawType = type;
@@ -42,17 +53,23 @@ const drawBackground = (gap: number) => {
 
     // draw background color
     ctx.fillStyle = "#F2F2F2";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(-translateX, -translateY, canvas.width, canvas.height);
 
     // draw background grid
     ctx.translate(0.5, 0.5);
     ctx.strokeStyle = "#e0e0e0";
-    for (let i = gap; i < canvasWidth; i+=gap) {
+    for (let i = gap; i < canvas.width; i+=gap) {
         ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i, canvasHeight);
-        ctx.moveTo(0, i);
-        ctx.lineTo(canvasWidth, i);
+        ctx.moveTo(i-translateX, -translateY);
+        ctx.lineTo(i-translateX, canvas.height-translateY);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    for (let i = gap; i < canvas.height; i+=gap) {
+        ctx.beginPath();
+        ctx.moveTo(-translateX, i-translateY);
+        ctx.lineTo(canvas.width-translateX, i-translateY);
         ctx.stroke();
         ctx.closePath();
     }
@@ -66,7 +83,7 @@ const repaint = () => {
         repaintLinearPath();
         return;
     }
-    ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctx.clearRect(-translateX,-translateY, canvas.width, canvas.width);
     drawBackground(backgroundGridGap);
     canvasContent.forEach(c => {
         if(c.type === LINEARPATH) {
