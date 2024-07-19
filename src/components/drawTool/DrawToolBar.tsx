@@ -1,12 +1,12 @@
 import {useState} from "react";
-import {drawToolBarDataList, RECTANGLE} from "../../utils/data.ts";
+import {drawToolBarDataList, POINTER} from "../../utils/data.ts";
 import DrawToolBarItem from "./DrawToolBarItem.tsx";
 import {setDrawType} from "../../utils/canvas.ts";
 
 
 const DrawToolBar = () => {
 
-    const [tool, setTool] = useState(RECTANGLE);
+    const [tool, setTool] = useState(POINTER);
 
 
     return (
@@ -25,6 +25,7 @@ const DrawToolBar = () => {
                                      }}
                                      itemValue={d.toolValue}
                                      Svg={d.Svg}
+                                     key={d.toolValue}
                     />
                 ))
             }
