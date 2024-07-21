@@ -1,15 +1,15 @@
 import rough from 'roughjs';
-import {CanvasContentType} from "./types.ts";
-import {circlePointerDown, circlePointerMove} from "./circle.ts";
+import {circlePointerDown, circlePointerMove, paintCircle} from "./circle.ts";
 import {linearPathPointerDown, linearPathPointerMove, paintLinearPath, repaintLinearPath} from "./linearPath.ts";
 import {CIRCLE, ELLIPSE, LINE, LINEARPATH, POINTER, RECTANGLE} from "./data.ts";
-import {rectanglePointerDown, rectanglePointerMove} from "./rectangle.ts";
 import {linePointerDown, linePointerMove} from "./line.ts";
 import {ellipsePointerDown, ellipsePointerMove} from "./ellipse.ts";
 import {pointerPointerDown, pointerPointerMove} from "./pointer.ts";
+import {ShapeType} from "./types.ts";
+import {paintRectangle, rectanglePointerDown, rectanglePointerMove} from "./rectangle.ts";
 
 
-export const canvasContent: CanvasContentType[] = [];
+export const shapeList: ShapeType[] = [];
 let drawType = POINTER;
 let hasDown = false;
 let hasMove = false;
@@ -23,21 +23,19 @@ canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 window.document.body.appendChild(canvas);
 
-const ctx = canvas.getContext("2d");
+export const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 export const rc = rough.canvas(canvas);
 export const generator = rc.generator;
-const backgroundGridGap = 75;
+const backgroundGridGap = 80;
 export let scale = 100;
-export let translateX = Math.floor(canvas.width/2);
-export let translateY = Math.floor(canvas.height/2);
-export let originalTranslateX = Math.floor(canvas.width/2);
-export let originalTranslateY = Math.floor(canvas.height/2);
+export const defaultTranslateX = Math.floor(canvas.width/2);
+export const defaultTranslateY = Math.floor(canvas.height/2);
+export let shapeTranslateX = 0;
+export let shapeTranslateY = 0;
 
 
 
-window.ctx = ctx;
-// ctx.scale(2,2)
-ctx.translate(translateX, translateY);
+ctx.translate(defaultTranslateX/scale*100, defaultTranslateY/scale*100);
 
 
 export const setDrawType = (type: string) => {
@@ -50,69 +48,77 @@ export const setCanvasScale = (newScale: number) => {
     repaint();
 }
 
+
+
 export const setCanvasTranslate = (newTranslateX: number, newTranslateY: number) => {
-    ctx.translate(newTranslateX, newTranslateY);
-    translateX += newTranslateX*scale/100;
-    translateY += newTranslateY*scale/100;
+    shapeTranslateX += newTranslateX/scale*100;
+    shapeTranslateY += newTranslateY/scale*100;
     repaint();
 }
 
 const drawBackground = (gap: number) => {
 
-    // console.log(translateX-originalTranslateX);
-    // console.log(translateY-originalTranslateY);
     // draw background color
     ctx.fillStyle = "#F2F2F2";
     ctx.fillRect(
-        -translateX/scale*100,
-        -translateY/scale*100,
+        -defaultTranslateX/scale*100,
+        -defaultTranslateY/scale*100,
         canvas.width/scale*100,
         canvas.height/scale*100
     );
 
     // draw background grid
     ctx.translate(0.5, 0.5);
-    ctx.strokeStyle = "#d0d0d0";
 
-    for (let i = 0; i <= Math.floor(canvas.width/scale*50); i+=gap) {
-        ctx.beginPath();
-        ctx.moveTo(i, -translateY/scale*100);
-        ctx.lineTo(i, canvas.height/scale*100-translateY/scale*100);
-        ctx.moveTo(-i, -translateY/scale*100);
-        ctx.lineTo(-i, canvas.height/scale*100-translateY/scale*100);
-        ctx.stroke();
-        ctx.closePath();
+    // draw grid
+    ctx.beginPath();
+    const rowLength = Math.ceil(canvas.width/scale*100);
+    const rowHalfLength = Math.ceil(canvas.width/scale*50);
+
+    const columnHalfLength = Math.ceil(canvas.height/scale*100/2);
+    const rowDeviation = Math.floor(canvas.width/scale*50/gap)*gap;
+
+    // draw colum grid
+    for (let i = 0; i < rowLength; i+=gap) {
+        const positive = (i+shapeTranslateX%rowLength+rowLength)%rowLength-rowHalfLength;
+        ctx.moveTo(positive, -columnHalfLength);
+        ctx.lineTo(positive, columnHalfLength);
     }
 
-    for (let i = 0; i <= Math.floor(canvas.height/scale*50); i+=gap) {
-        ctx.beginPath();
-        ctx.moveTo(-translateX/scale*100, i);
-        ctx.lineTo(canvas.width/scale*100-translateX/scale*100, i);
-        ctx.moveTo(-translateX/scale*100, -i);
-        ctx.lineTo(canvas.width/scale*100-translateX/scale*100, -i);
-        ctx.stroke();
-        ctx.closePath();
-    }
+    // draw row grid
+    // for (let i = 0; i < columnHalfLength; i+=gap) {
+    //     const positiveGrid = i+shapeTranslateY>columnHalfLength?i+shapeTranslateY-2*columnHalfLength:i+shapeTranslateY;
+    //     const negativeGrid = -i+shapeTranslateY<-columnHalfLength?-i+shapeTranslateY+2*columnHalfLength:-i+shapeTranslateY;
+    //     ctx.moveTo(-rowHalfLength, positiveGrid);
+    //     ctx.lineTo(rowHalfLength, positiveGrid);
+    //     ctx.moveTo(-rowHalfLength, negativeGrid);
+    //     ctx.lineTo(rowHalfLength, negativeGrid);
+    // }
+    ctx.strokeStyle = "#c0c0c0";
+    ctx.stroke();
+    ctx.closePath();
 
     ctx.translate(-0.5, -0.5);
-    ctx.fillStyle = "black";
-    ctx.fillRect(-20, -20, 40, 40)
+    // ctx.fillStyle = "black";
+    // ctx.fillRect(-20, -20, 40, 40)
 }
 
 
 const repaint = () => {
-    if(drawType === LINEARPATH) {
-        repaintLinearPath();
-        return;
-    }
-    ctx.clearRect(-translateX,-translateY, canvas.width, canvas.width);
+    // if(hasDown && drawType === LINEARPATH) {
+    //     repaintLinearPath();
+    //     return;
+    // }
+
+    // initial work
+    ctx.clearRect(-defaultTranslateX,-defaultTranslateY, canvas.width, canvas.width);
     drawBackground(backgroundGridGap);
-    canvasContent.forEach(c => {
-        if(c.type === LINEARPATH) {
-            paintLinearPath(c);
-            return;
+
+    shapeList.forEach(shape => {
+        switch (shape.type) {
+            case RECTANGLE: paintRectangle(shape); break;
+            case CIRCLE: paintCircle(shape); break;
         }
-        rc.draw(c.drawable!)
     })
 }
 
@@ -120,12 +126,13 @@ const handlePointerDown = (event: PointerEvent) => {
     event.preventDefault();
     hasDown = true;
     switch (drawType) {
-        case RECTANGLE: rectanglePointerDown(event.clientX, event.clientY); break;
-        case CIRCLE: circlePointerDown(event.clientX, event.clientY); break;
-        case ELLIPSE: ellipsePointerDown(event.clientX, event.clientY); break;
-        case LINE: linePointerDown(event.clientX, event.clientY); break;
-        case LINEARPATH: linearPathPointerDown(event.clientX, event.clientY); break;
         case POINTER: pointerPointerDown(event.clientX, event.clientY); break;
+        case RECTANGLE: rectanglePointerDown(event); break;
+        case CIRCLE: circlePointerDown(event); break;
+        // case CIRCLE: circleRoughPointerDown(event.clientX, event.clientY); break;
+        // case ELLIPSE: ellipsePointerDown(event.clientX, event.clientY); break;
+        // case LINE: linePointerDown(event.clientX, event.clientY); break;
+        // case LINEARPATH: linearPathPointerDown(event.clientX, event.clientY); break;
     }
 }
 
@@ -134,6 +141,7 @@ const handlePointerMove = (() => {
     let isThrottle = false;
     return (event: PointerEvent) => {
         event.preventDefault();
+        // console.log(event.pointerId);
         if (!hasDown || isThrottle) {
             return;
         }
@@ -152,11 +160,12 @@ const handlePointerMove = (() => {
         hasMove = true;
         switch (drawType) {
             case POINTER: pointerPointerMove(event.clientX, event.clientY); break;
-            case RECTANGLE: rectanglePointerMove(event.clientX, event.clientY); break;
-            case CIRCLE: circlePointerMove(event.clientX, event.clientY); break;
-            case ELLIPSE: ellipsePointerMove(event.clientX, event.clientY); break;
-            case LINE: linePointerMove(event.clientX, event.clientY); break;
-            case LINEARPATH: linearPathPointerMove(event.clientX, event.clientY); break;
+            case RECTANGLE: rectanglePointerMove(event); break;
+            case CIRCLE: circlePointerMove(event); break;
+            // case CIRCLE: circleRoughPointerMove(event.clientX, event.clientY); break;
+            // case ELLIPSE: ellipsePointerMove(event.clientX, event.clientY); break;
+            // case LINE: linePointerMove(event.clientX, event.clientY); break;
+            // case LINEARPATH: linearPathPointerMove(event.clientX, event.clientY); break;
         }
 
         if(drawType !== POINTER) {
@@ -173,7 +182,7 @@ const handlePointerUp = (event: PointerEvent) => {
         return;
     }
     if(!hasMove && drawType !== POINTER) {
-        canvasContent.pop();
+        shapeList.pop();
     }
     hasDown = false;
     hasMove = false;

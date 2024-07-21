@@ -19,3 +19,12 @@ export interface CanvasContentPointType {
     height: number,
     drawable: Drawable,
 }
+
+export interface ShapeType {
+    type: string,
+    x: number,
+    y: number,
+    width?: number,
+    height?: number,
+    radius?: number,
+}
