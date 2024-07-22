@@ -1,4 +1,6 @@
-import {scale, setCanvasScale, setCanvasTranslate} from "./canvas.ts";
+import {scale, setCanvasScale, setCanvasTranslate} from "./index.ts";
+
+
 
 
 export const handleWheel = (() => {

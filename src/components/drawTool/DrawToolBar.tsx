@@ -1,7 +1,7 @@
 import {useState} from "react";
-import {drawToolBarDataList, POINTER} from "../../utils/data.ts";
+import {drawToolBarDataList, POINTER} from "../../canvas/data.ts";
 import DrawToolBarItem from "./DrawToolBarItem.tsx";
-import {setDrawType} from "../../utils/canvas.ts";
+import {setDrawType} from "../../canvas";
 
 
 const DrawToolBar = () => {

@@ -1,6 +1,6 @@
 import PlusSvg from "./svg/PlusSvg.tsx";
 import {useEffect, useState} from "react";
-import {scale, setCanvasScale} from "../utils/canvas.ts";
+import {scale, setCanvasScale} from "../canvas";
 
 const ControlBar = () => {
 

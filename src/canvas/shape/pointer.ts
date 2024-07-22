@@ -1,4 +1,4 @@
-import {setCanvasTranslate} from "./canvas.ts";
+import {setCanvasTranslate} from "../index.ts";
 
 const lastMove = {
     x: 0,
