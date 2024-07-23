@@ -7,8 +7,8 @@ import {
     shapeTranslateX,
     shapeTranslateY
 } from "../index.ts";
-import {LINEARPATH} from "../data.ts";
-import {ShapeType} from "../types.ts";
+import {LINEARPATH} from "../../utils/data.ts";
+import {ShapeType} from "../../utils/types.ts";
 
 const prePoint = {
     x: 0,

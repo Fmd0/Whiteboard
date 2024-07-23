@@ -7,8 +7,8 @@ import {
     shapeTranslateX,
     shapeTranslateY
 } from "../index.ts";
-import {CIRCLE} from "../data.ts";
-import {ShapeType} from "../types.ts";
+import {CIRCLE} from "../../utils/data.ts";
+import {ShapeType} from "../../utils/types.ts";
 
 
 

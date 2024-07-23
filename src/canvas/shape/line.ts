@@ -6,8 +6,8 @@ import {
     shapeList,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
-import {LINE} from "../data.ts";
-import {ShapeType} from "../types.ts";
+import {LINE} from "../../utils/data.ts";
+import {ShapeType} from "../../utils/types.ts";
 
 
 export const paintLine = (shape: ShapeType) => {

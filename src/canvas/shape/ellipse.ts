@@ -6,8 +6,8 @@ import {
     shapeList,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
-import {ELLIPSE} from "../data.ts";
-import {ShapeType} from "../types.ts";
+import {ELLIPSE} from "../../utils/data.ts";
+import {ShapeType} from "../../utils/types.ts";
 
 
 export const paintEllipse = (shape: ShapeType) => {

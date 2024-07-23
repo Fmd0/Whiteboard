@@ -28,3 +28,11 @@ export interface ShapeType {
     height?: number,
     radius?: number,
 }
+
+export interface PointerInfoType {
+    hasDown: boolean;
+    hasMove: boolean;
+    drawType: string;
+    isThrottle: boolean;
+    shape?: ShapeType;
+}

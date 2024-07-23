@@ -1,6 +1,7 @@
 import PlusSvg from "./svg/PlusSvg.tsx";
 import {useEffect, useState} from "react";
 import {scale, setCanvasScale} from "../canvas";
+import {repaint} from "../canvas/paint.ts";
 
 const ControlBar = () => {
 
@@ -9,6 +10,7 @@ const ControlBar = () => {
     const updateScale = (newScale: number) => {
         setScaleState(newScale);
         setCanvasScale(newScale);
+        repaint();
     }
 
     useEffect(() => {

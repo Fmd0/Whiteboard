@@ -5,15 +5,15 @@ const lastMove = {
     y: 0,
 }
 
-export const pointerPointerDown = (clientX: number, clientY: number) => {
-    lastMove.x = clientX;
-    lastMove.y = clientY;
+export const pointerPointerDown = (event: PointerEvent) => {
+    lastMove.x = event.clientX;
+    lastMove.y = event.clientY;
 }
 
 
-export const pointerPointerMove = (clientX: number, clientY: number) => {
-    setCanvasTranslate(clientX-lastMove.x, clientY-lastMove.y);
-    lastMove.x = clientX;
-    lastMove.y = clientY;
+export const pointerPointerMove = (event: PointerEvent) => {
+    setCanvasTranslate(event.clientX-lastMove.x, event.clientY-lastMove.y);
+    lastMove.x = event.clientX;
+    lastMove.y = event.clientY;
 }
 
