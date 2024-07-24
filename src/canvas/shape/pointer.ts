@@ -1,19 +1,22 @@
 import {setCanvasTranslate} from "../index.ts";
+import {multiPointerMap} from "../pointerEvent.ts";
+import {POINTER} from "../../utils/data.ts";
 
-const lastMove = {
-    x: 0,
-    y: 0,
-}
 
 export const pointerPointerDown = (event: PointerEvent) => {
-    lastMove.x = event.clientX;
-    lastMove.y = event.clientY;
+    const pointerInfo = multiPointerMap.get(event.pointerId)!;
+    pointerInfo.shape = {
+        type: POINTER,
+        x: event.clientX,
+        y: event.clientY
+    }
 }
 
 
 export const pointerPointerMove = (event: PointerEvent) => {
-    setCanvasTranslate(event.clientX-lastMove.x, event.clientY-lastMove.y);
-    lastMove.x = event.clientX;
-    lastMove.y = event.clientY;
+    const pointerInfo = multiPointerMap.get(event.pointerId)!;
+    setCanvasTranslate(event.clientX-pointerInfo.shape!.x, event.clientY-pointerInfo.shape!.y);
+    pointerInfo.shape!.x = event.clientX;
+    pointerInfo.shape!.y = event.clientY;
 }
 

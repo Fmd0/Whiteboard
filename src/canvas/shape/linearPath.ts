@@ -9,11 +9,8 @@ import {
 } from "../index.ts";
 import {LINEARPATH} from "../../utils/data.ts";
 import {ShapeType} from "../../utils/types.ts";
+import {multiPointerMap} from "../pointerEvent.ts";
 
-const prePoint = {
-    x: 0,
-    y: 0,
-}
 
 export const paintLinearPath = (shape: ShapeType) => {
     ctx.beginPath();
@@ -31,18 +28,25 @@ export const repaintLinearPath = () => {
 }
 
 export const linearPathPointerDown = (event: PointerEvent) => {
-    prePoint.x = event.clientX;
-    prePoint.y = event.clientY;
+    const pointerInfo = multiPointerMap.get(event.pointerId)!;
+    pointerInfo.shape = {
+        type: LINEARPATH,
+        x: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
+        y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
+    }
 }
 
 export const linearPathPointerMove = (event: PointerEvent) => {
+    const pointerInfo = multiPointerMap.get(event.pointerId)!;
+    const width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
+    const height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
     shapeList.push({
         type: LINEARPATH,
-        x: (prePoint.x-defaultTranslateX)/scale*100-shapeTranslateX,
-        y: (prePoint.y-defaultTranslateY)/scale*100-shapeTranslateY,
-        width: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
-        height: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
+        x: pointerInfo.shape!.x,
+        y: pointerInfo.shape!.y,
+        width,
+        height,
     })
-    prePoint.x = event.clientX;
-    prePoint.y = event.clientY;
+    pointerInfo.shape!.x = width;
+    pointerInfo.shape!.y = height;
 }

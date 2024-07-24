@@ -3,11 +3,11 @@ import {
     defaultTranslateX,
     defaultTranslateY,
     scale,
-    shapeList,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
 import {LINE} from "../../utils/data.ts";
 import {ShapeType} from "../../utils/types.ts";
+import {multiPointerMap} from "../pointerEvent.ts";
 
 
 export const paintLine = (shape: ShapeType) => {
@@ -21,17 +21,18 @@ export const paintLine = (shape: ShapeType) => {
 }
 
 export const linePointerDown = (event: PointerEvent) => {
-    shapeList.push({
+    const pointerInfo = multiPointerMap.get(event.pointerId)!;
+    pointerInfo.shape = {
         type: LINE,
         x: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         width: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         height: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
-    })
+    };
 }
 
 export const linePointerMove = (event: PointerEvent) => {
-    const currentShape = shapeList[shapeList.length-1];
-    currentShape.width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
-    currentShape.height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
+    const shape = multiPointerMap.get(event.pointerId)!.shape!;
+    shape.width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
+    shape.height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
 }

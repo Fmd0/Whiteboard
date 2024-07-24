@@ -1,7 +1,6 @@
 import {
     ctx,
     scale,
-    shapeList,
     defaultTranslateX,
     defaultTranslateY,
     shapeTranslateX,
@@ -9,6 +8,7 @@ import {
 } from "../index.ts";
 import {CIRCLE} from "../../utils/data.ts";
 import {ShapeType} from "../../utils/types.ts";
+import {multiPointerMap} from "../pointerEvent.ts";
 
 
 
@@ -27,22 +27,24 @@ export const paintCircle = (shape: ShapeType) => {
 }
 
 export const circlePointerDown = (event: PointerEvent) => {
-    shapeList.push({
+    const pointerInfo = multiPointerMap.get(event.pointerId)!;
+    pointerInfo.shape = {
         type: CIRCLE,
         x: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         width: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         height: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         radius: 0,
-    });
+    };
 }
 
+
 export const circlePointerMove = (event: PointerEvent) => {
-    const currentShape = shapeList[shapeList.length-1];
-    currentShape.radius = Math.sqrt(
-        Math.pow((event.clientX-defaultTranslateX)/scale*100-currentShape.x-shapeTranslateX, 2) +
-        Math.pow((event.clientY-defaultTranslateY)/scale*100-currentShape.y-shapeTranslateY, 2)
+    const shape = multiPointerMap.get(event.pointerId)!.shape!;
+    shape.radius = Math.sqrt(
+        Math.pow((event.clientX-defaultTranslateX)/scale*100-shape.x-shapeTranslateX, 2) +
+        Math.pow((event.clientY-defaultTranslateY)/scale*100-shape.y-shapeTranslateY, 2)
     )/2;
-    currentShape.width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
-    currentShape.height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
+    shape.width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
+    shape.height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
 }

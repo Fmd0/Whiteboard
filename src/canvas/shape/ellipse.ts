@@ -3,11 +3,11 @@ import {
     defaultTranslateX,
     defaultTranslateY,
     scale,
-    shapeList,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
 import {ELLIPSE} from "../../utils/data.ts";
 import {ShapeType} from "../../utils/types.ts";
+import {multiPointerMap} from "../pointerEvent.ts";
 
 
 export const paintEllipse = (shape: ShapeType) => {
@@ -28,15 +28,16 @@ export const paintEllipse = (shape: ShapeType) => {
 }
 
 export const ellipsePointerDown = (event: PointerEvent) => {
-    shapeList.push({
+    const pointerInfo = multiPointerMap.get(event.pointerId)!;
+    pointerInfo.shape = {
         type: ELLIPSE,
         x: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
-    })
+    };
 }
 
 export const ellipsePointerMove = (event: PointerEvent) => {
-    const currentShape = shapeList[shapeList.length-1];
-    currentShape.width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
-    currentShape.height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
+    const shape = multiPointerMap.get(event.pointerId)!.shape!;
+    shape.width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
+    shape.height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
 }

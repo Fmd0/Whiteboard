@@ -57,7 +57,6 @@ const drawBackground = (gap: number) => {
 
 export const repaint = () => {
 
-
     // initial work
     ctx.clearRect(
         -defaultTranslateX/scale*100,

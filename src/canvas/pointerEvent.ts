@@ -4,7 +4,7 @@ import {rectanglePointerDown, rectanglePointerMove} from "./shape/rectangle.ts";
 import {circlePointerDown, circlePointerMove} from "./shape/circle.ts";
 import {ellipsePointerDown, ellipsePointerMove} from "./shape/ellipse.ts";
 import {linePointerDown, linePointerMove} from "./shape/line.ts";
-import {linearPathPointerDown, linearPathPointerMove} from "./shape/linearPath.ts";
+import {linearPathPointerDown, linearPathPointerMove, repaintLinearPath} from "./shape/linearPath.ts";
 import {shapeList, drawType} from "./index.ts";
 import {repaint} from "./paint.ts";
 import {PointerInfoType} from "../utils/types.ts";
@@ -39,7 +39,6 @@ export const handlePointerDown = (event: PointerEvent) => {
 
 
 export const handlePointerMove = (() => {
-    // let isThrottle = false;
     return (event: PointerEvent) => {
         event.preventDefault();
 
@@ -47,9 +46,8 @@ export const handlePointerMove = (() => {
         if (!pointerInfo || !pointerInfo.hasDown || pointerInfo.isThrottle) {
             return;
         }
+
         pointerInfo.isThrottle = true;
-
-
 
         if(drawType === POINTER) {
             setTimeout(() => {
@@ -72,6 +70,12 @@ export const handlePointerMove = (() => {
             case LINE: linePointerMove(event); break;
             case LINEARPATH: linearPathPointerMove(event); break;
         }
+
+        if(pointerInfo.drawType === LINEARPATH) {
+            repaintLinearPath();
+            return;
+        }
+
         repaint();
     }
 
@@ -83,12 +87,16 @@ export const handlePointerUp = (event: PointerEvent) => {
     if(!multiPointerMap.has(event.pointerId)) {
         return;
     }
+
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
+
     if(!pointerInfo.hasMove && pointerInfo.drawType !== POINTER) {
         return;
     }
-    if(pointerInfo.shape) {
+
+    if(pointerInfo.drawType !== LINEARPATH && pointerInfo.shape) {
         shapeList.push(pointerInfo.shape)
     }
+
     multiPointerMap.delete(event.pointerId);
 }
