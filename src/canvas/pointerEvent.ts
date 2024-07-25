@@ -4,27 +4,27 @@ import {rectanglePointerDown, rectanglePointerMove} from "./shape/rectangle.ts";
 import {circlePointerDown, circlePointerMove} from "./shape/circle.ts";
 import {ellipsePointerDown, ellipsePointerMove} from "./shape/ellipse.ts";
 import {linePointerDown, linePointerMove} from "./shape/line.ts";
-import {linearPathPointerDown, linearPathPointerMove, repaintLinearPath} from "./shape/linearPath.ts";
-import {shapeList, drawType} from "./index.ts";
+import {linearPathPointerDown, linearPathPointerMove} from "./shape/linearPath.ts";
+import {shapeList, drawType, center} from "./index.ts";
 import {repaint} from "./paint.ts";
 import {PointerInfoType} from "../utils/types.ts";
+import {handleMultiPointerEvent} from "./multiPointerEvent.ts";
 
 
 export const multiPointerMap = new Map<number, PointerInfoType>();
 
-
 export const handlePointerDown = (event: PointerEvent) => {
     event.preventDefault();
 
-    if(drawType===POINTER && multiPointerMap.size>=1 || multiPointerMap.size >= 2) {
+    if(multiPointerMap.size >= 2) {
         return;
     }
 
     multiPointerMap.set(event.pointerId, {
-        hasDown: true,
         hasMove: false,
         isThrottle: false,
         drawType,
+        usedForMultiPointer: false,
     });
 
     switch (drawType) {
@@ -43,24 +43,47 @@ export const handlePointerMove = (() => {
         event.preventDefault();
 
         const pointerInfo = multiPointerMap.get(event.pointerId);
-        if (!pointerInfo || !pointerInfo.hasDown || pointerInfo.isThrottle) {
+        if (!pointerInfo || pointerInfo.isThrottle) {
             return;
         }
 
         pointerInfo.isThrottle = true;
 
-        if(drawType === POINTER) {
+        // judge whether is multiple pointer case
+        if(multiPointerMap.size === 2 ) {
+            let noMove = true;
+            multiPointerMap.forEach(pointer => {
+                noMove = noMove && !pointer.hasMove;
+            })
+            if(noMove) {
+                setTimeout(() => {
+                    pointerInfo.isThrottle = false;
+                }, 14);
+                handleMultiPointerEvent(event);
+                repaint();
+                return;
+            }
+        }
+
+        if(pointerInfo.drawType!==POINTER && pointerInfo.usedForMultiPointer) {
+            return;
+        }
+
+
+        if(pointerInfo.drawType === POINTER) {
             setTimeout(() => {
                 pointerInfo.isThrottle = false;
-            }, 30)
+            }, 14);
         }
         else {
             setTimeout(() => {
                 pointerInfo.isThrottle = false;
-            }, 35)
+            }, 30);
         }
 
-        pointerInfo.hasMove = true;
+        if(pointerInfo.drawType !== POINTER) {
+            pointerInfo.hasMove = true;
+        }
 
         switch (drawType) {
             case POINTER: pointerPointerMove(event); break;
@@ -71,11 +94,6 @@ export const handlePointerMove = (() => {
             case LINEARPATH: linearPathPointerMove(event); break;
         }
 
-        if(pointerInfo.drawType === LINEARPATH) {
-            repaintLinearPath();
-            return;
-        }
-
         repaint();
     }
 
@@ -84,19 +102,17 @@ export const handlePointerMove = (() => {
 
 export const handlePointerUp = (event: PointerEvent) => {
     event.preventDefault();
+
     if(!multiPointerMap.has(event.pointerId)) {
         return;
     }
 
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
 
-    if(!pointerInfo.hasMove && pointerInfo.drawType !== POINTER) {
-        return;
-    }
-
-    if(pointerInfo.drawType !== LINEARPATH && pointerInfo.shape) {
-        shapeList.push(pointerInfo.shape)
+    if(pointerInfo.drawType!==POINTER && pointerInfo.shape) {
+        shapeList.push(pointerInfo.shape);
     }
 
     multiPointerMap.delete(event.pointerId);
+    center.hasInitialized = false;
 }

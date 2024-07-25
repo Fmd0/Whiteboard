@@ -28,6 +28,8 @@ export const linePointerDown = (event: PointerEvent) => {
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         width: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         height: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
+        clientX: event.clientX,
+        clientY: event.clientY,
     };
 }
 

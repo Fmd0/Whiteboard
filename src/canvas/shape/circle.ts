@@ -35,6 +35,8 @@ export const circlePointerDown = (event: PointerEvent) => {
         width: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         height: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         radius: 0,
+        clientX: event.clientX,
+        clientY: event.clientY,
     };
 }
 

@@ -8,7 +8,9 @@ export const pointerPointerDown = (event: PointerEvent) => {
     pointerInfo.shape = {
         type: POINTER,
         x: event.clientX,
-        y: event.clientY
+        y: event.clientY,
+        clientX: event.clientX,
+        clientY: event.clientY,
     }
 }
 
@@ -18,5 +20,7 @@ export const pointerPointerMove = (event: PointerEvent) => {
     setCanvasTranslate(event.clientX-pointerInfo.shape!.x, event.clientY-pointerInfo.shape!.y);
     pointerInfo.shape!.x = event.clientX;
     pointerInfo.shape!.y = event.clientY;
+    pointerInfo.shape!.clientX = event.clientX;
+    pointerInfo.shape!.clientY = event.clientY;
 }
 

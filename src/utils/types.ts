@@ -1,23 +1,9 @@
-import {Drawable} from "roughjs/bin/core";
 
-
-export interface CanvasContentType {
-    type: string,
-    x: number,
-    y: number,
-    width?: number,
-    height?: number,
-    diameter?: number,
-    points?: CanvasContentPointType[],
-    drawable?: Drawable,
-}
-
-export interface CanvasContentPointType {
+export interface LinearPathType {
     x: number,
     y: number,
     width: number,
     height: number,
-    drawable: Drawable,
 }
 
 export interface ShapeType {
@@ -27,12 +13,25 @@ export interface ShapeType {
     width?: number,
     height?: number,
     radius?: number,
+    linearPathList?: LinearPathType[]
+}
+
+export interface PointerInfoShapeType{
+    type: string,
+    x: number,
+    y: number,
+    width?: number,
+    height?: number,
+    radius?: number,
+    clientX: number,
+    clientY: number,
+    linearPathList?: LinearPathType[]
 }
 
 export interface PointerInfoType {
-    hasDown: boolean;
     hasMove: boolean;
     drawType: string;
     isThrottle: boolean;
-    shape?: ShapeType;
+    shape?: PointerInfoShapeType;
+    usedForMultiPointer: boolean;
 }

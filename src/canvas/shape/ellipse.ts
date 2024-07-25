@@ -33,6 +33,8 @@ export const ellipsePointerDown = (event: PointerEvent) => {
         type: ELLIPSE,
         x: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
+        clientX: event.clientX,
+        clientY: event.clientY,
     };
 }
 

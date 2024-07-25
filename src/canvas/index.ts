@@ -23,7 +23,11 @@ export const defaultTranslateX = Math.floor(canvas.width/2);
 export const defaultTranslateY = Math.floor(canvas.height/2);
 export let shapeTranslateX = 0;
 export let shapeTranslateY = 0;
-
+export const center = {
+    x: 0,
+    y: 0,
+    hasInitialized: false,
+}
 
 export const setDrawType = (type: string) => {
     drawType = type;

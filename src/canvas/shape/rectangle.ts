@@ -22,6 +22,8 @@ export const rectanglePointerDown = (event: PointerEvent) => {
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         width: 0,
         height: 0,
+        clientX: event.clientX,
+        clientY: event.clientY,
     };
 }
 

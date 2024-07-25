@@ -14,8 +14,10 @@ import {multiPointerMap} from "../pointerEvent.ts";
 
 export const paintLinearPath = (shape: ShapeType) => {
     ctx.beginPath();
-    ctx.moveTo(shape.x+shapeTranslateX, shape.y+shapeTranslateY);
-    ctx.lineTo(shape.width!+shapeTranslateX, shape.height!+shapeTranslateY);
+    shape.linearPathList!.forEach(linearPath => {
+        ctx.moveTo(linearPath.x+shapeTranslateX, linearPath.y+shapeTranslateY);
+        ctx.lineTo(linearPath.width!+shapeTranslateX, linearPath.height!+shapeTranslateY);
+    })
 
     ctx.strokeStyle = "black";
     ctx.stroke();
@@ -33,6 +35,9 @@ export const linearPathPointerDown = (event: PointerEvent) => {
         type: LINEARPATH,
         x: (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX,
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        linearPathList: [],
     }
 }
 
@@ -40,8 +45,8 @@ export const linearPathPointerMove = (event: PointerEvent) => {
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
     const width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
     const height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
-    shapeList.push({
-        type: LINEARPATH,
+
+    pointerInfo.shape!.linearPathList?.push({
         x: pointerInfo.shape!.x,
         y: pointerInfo.shape!.y,
         width,
@@ -49,4 +54,12 @@ export const linearPathPointerMove = (event: PointerEvent) => {
     })
     pointerInfo.shape!.x = width;
     pointerInfo.shape!.y = height;
+
+    // shapeList.push({
+    //     type: LINEARPATH,
+    //     x: pointerInfo.shape!.x,
+    //     y: pointerInfo.shape!.y,
+    //     width,
+    //     height,
+    // })
 }
