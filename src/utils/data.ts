@@ -13,6 +13,16 @@ export const ELLIPSE = "ellipse";
 export const LINE = "line";
 export const LINEARPATH = "linearPath"
 
+export const SELECT_SHAPE = "selectShape";
+export const SELECT_TOP_LEFT = "selectTopLeft";
+export const SELECT_TOP_CENTER = "selectTopCenter";
+export const SELECT_TOP_RIGHT = "selectTopRight";
+export const SELECT_MIDDLE_LEFT = "selectMiddleLeft";
+export const SELECT_MIDDLE_RIGHT = "selectMiddleRight";
+export const SELECT_BOTTOM_LEFT = "selectBottomLeft";
+export const SELECT_BOTTOM_CENTER = "selectBottomCenter";
+export const SELECT_BOTTOM_RIGHT = "selectBottomRight";
+
 
 export const drawToolBarDataList = [
     {

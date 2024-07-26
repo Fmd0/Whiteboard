@@ -28,9 +28,14 @@ export const center = {
     y: 0,
     hasInitialized: false,
 }
+export let selectedShape: ShapeType|null = null;
 
 export const setDrawType = (type: string) => {
     drawType = type;
+}
+
+export const setSelectedShape = (shape: ShapeType|null) => {
+    selectedShape = shape;
 }
 
 export const setCanvasScale = (newScale: number) => {

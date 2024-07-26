@@ -12,7 +12,7 @@ export const handleWheel = (() => {
         isThrottle = true;
         setTimeout(() => {
             isThrottle = false;
-        }, 15)
+        }, 14)
 
         if(!e.ctrlKey) {
             setCanvasTranslate(

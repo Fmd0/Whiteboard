@@ -34,4 +34,5 @@ export interface PointerInfoType {
     isThrottle: boolean;
     shape?: PointerInfoShapeType;
     usedForMultiPointer: boolean;
+    selectedArea?: string,
 }

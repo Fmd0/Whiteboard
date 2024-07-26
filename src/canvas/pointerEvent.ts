@@ -9,6 +9,7 @@ import {shapeList, drawType, center} from "./index.ts";
 import {repaint} from "./paint.ts";
 import {PointerInfoType} from "../utils/types.ts";
 import {handleMultiPointerEvent} from "./multiPointerEvent.ts";
+import {handleSelect} from "./select.ts";
 
 
 export const multiPointerMap = new Map<number, PointerInfoType>();
@@ -22,10 +23,15 @@ export const handlePointerDown = (event: PointerEvent) => {
 
     multiPointerMap.set(event.pointerId, {
         hasMove: false,
-        isThrottle: false,
+        isThrottle: true,
         drawType,
         usedForMultiPointer: false,
     });
+    setTimeout(() => {
+        if(multiPointerMap.get(event.pointerId)) {
+            multiPointerMap.get(event.pointerId).isThrottle = false;
+        }
+    }, 14);
 
     switch (drawType) {
         case POINTER: pointerPointerDown(event); break;
@@ -53,7 +59,7 @@ export const handlePointerMove = (() => {
         if(multiPointerMap.size === 2 ) {
             let noMove = true;
             multiPointerMap.forEach(pointer => {
-                noMove = noMove && !pointer.hasMove;
+                noMove = noMove && (pointer.drawType===POINTER || !pointer.hasMove);
             })
             if(noMove) {
                 setTimeout(() => {
@@ -81,9 +87,7 @@ export const handlePointerMove = (() => {
             }, 30);
         }
 
-        if(pointerInfo.drawType !== POINTER) {
-            pointerInfo.hasMove = true;
-        }
+        pointerInfo.hasMove = true;
 
         switch (drawType) {
             case POINTER: pointerPointerMove(event); break;
@@ -108,6 +112,10 @@ export const handlePointerUp = (event: PointerEvent) => {
     }
 
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
+
+    if(pointerInfo.drawType===POINTER && !pointerInfo.hasMove && !pointerInfo.usedForMultiPointer) {
+        handleSelect(event);
+    }
 
     if(pointerInfo.drawType!==POINTER && pointerInfo.shape) {
         shapeList.push(pointerInfo.shape);

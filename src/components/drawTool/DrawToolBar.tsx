@@ -1,7 +1,8 @@
 import {useState} from "react";
 import {drawToolBarDataList, POINTER} from "../../utils/data.ts";
 import DrawToolBarItem from "./DrawToolBarItem.tsx";
-import {setDrawType} from "../../canvas";
+import {setDrawType, setSelectedShape} from "../../canvas";
+import {repaint} from "../../canvas/paint.ts";
 
 
 const DrawToolBar = () => {
@@ -22,6 +23,8 @@ const DrawToolBar = () => {
                                      handleClick={() => {
                                          setTool(d.toolValue);
                                          setDrawType(d.toolValue);
+                                         setSelectedShape(null);
+                                         repaint();
                                      }}
                                      itemValue={d.toolValue}
                                      Svg={d.Svg}

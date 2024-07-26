@@ -13,15 +13,20 @@ import {multiPointerMap} from "../pointerEvent.ts";
 
 
 export const paintLinearPath = (shape: ShapeType) => {
+    ctx.save();
     ctx.beginPath();
     shape.linearPathList!.forEach(linearPath => {
         ctx.moveTo(linearPath.x+shapeTranslateX, linearPath.y+shapeTranslateY);
         ctx.lineTo(linearPath.width!+shapeTranslateX, linearPath.height!+shapeTranslateY);
     })
 
+
     ctx.strokeStyle = "black";
+    ctx.lineWidth = 4;
+
     ctx.stroke();
     ctx.closePath();
+    ctx.restore();
 }
 
 export const repaintLinearPath = () => {
@@ -54,12 +59,4 @@ export const linearPathPointerMove = (event: PointerEvent) => {
     })
     pointerInfo.shape!.x = width;
     pointerInfo.shape!.y = height;
-
-    // shapeList.push({
-    //     type: LINEARPATH,
-    //     x: pointerInfo.shape!.x,
-    //     y: pointerInfo.shape!.y,
-    //     width,
-    //     height,
-    // })
 }

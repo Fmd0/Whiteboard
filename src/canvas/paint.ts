@@ -1,6 +1,6 @@
 import {CIRCLE, ELLIPSE, LINE, LINEARPATH, RECTANGLE} from "../utils/data.ts";
 import {paintLinearPath} from "./shape/linearPath.ts";
-import {paintRectangle} from "./shape/rectangle.ts";
+import {paintRectangle, paintRectangleSelector} from "./shape/rectangle.ts";
 import {paintCircle} from "./shape/circle.ts";
 import {paintEllipse} from "./shape/ellipse.ts";
 import {paintLine} from "./shape/line.ts";
@@ -9,7 +9,7 @@ import {
     ctx,
     defaultTranslateX,
     defaultTranslateY,
-    scale,
+    scale, selectedShape,
     shapeList,
     shapeTranslateX,
     shapeTranslateY
@@ -88,4 +88,10 @@ export const repaint = () => {
             }
         }
     })
+
+    if(selectedShape) {
+        switch (selectedShape.type) {
+            case RECTANGLE: paintRectangleSelector(selectedShape); break;
+        }
+    }
 }
