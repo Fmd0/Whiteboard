@@ -1,9 +1,8 @@
-import {CIRCLE, ELLIPSE, LINE, LINEARPATH, RECTANGLE} from "../utils/data.ts";
-import {paintLinearPath} from "./shape/linearPath.ts";
+import {ELLIPSE, LINE, LINEARPATH, RECTANGLE} from "../utils/data.ts";
+import {paintLinearPath, paintLinearPathSelector} from "./shape/linearPath.ts";
 import {paintRectangle, paintRectangleSelector} from "./shape/rectangle.ts";
-import {paintCircle} from "./shape/circle.ts";
-import {paintEllipse} from "./shape/ellipse.ts";
-import {paintLine} from "./shape/line.ts";
+import {paintEllipse, paintEllipseSelector} from "./shape/ellipse.ts";
+import {paintLine, paintLineSelector} from "./shape/line.ts";
 import {
     backgroundGridGap,
     ctx,
@@ -14,7 +13,7 @@ import {
     shapeTranslateX,
     shapeTranslateY
 } from "./index.ts";
-import {multiPointerMap} from "./pointerEvent.ts";
+import {hasMoved, multiPointerMap} from "./pointerEvent.ts";
 
 
 const drawBackground = (gap: number) => {
@@ -66,22 +65,20 @@ export const repaint = () => {
     );
     drawBackground(backgroundGridGap);
 
-    shapeList.forEach(shape => {
+    for(const shape of shapeList) {
         switch (shape.type) {
             case RECTANGLE: paintRectangle(shape); break;
-            case CIRCLE: paintCircle(shape); break;
             case ELLIPSE: paintEllipse(shape); break;
             case LINE: paintLine(shape); break;
             case LINEARPATH: paintLinearPath(shape); break;
         }
-    })
+    }
 
-    multiPointerMap.forEach(pointer => {
-        const shape = pointer.shape;
-        if(shape) {
+    multiPointerMap.forEach(pointerInfo => {
+        const shape = pointerInfo.shape;
+        if(shape && hasMoved(shape)) {
             switch (shape.type) {
                 case RECTANGLE: paintRectangle(shape); break;
-                case CIRCLE: paintCircle(shape); break;
                 case ELLIPSE: paintEllipse(shape); break;
                 case LINE: paintLine(shape); break;
                 case LINEARPATH: paintLinearPath(shape); break;
@@ -92,6 +89,9 @@ export const repaint = () => {
     if(selectedShape) {
         switch (selectedShape.type) {
             case RECTANGLE: paintRectangleSelector(selectedShape); break;
+            case ELLIPSE: paintEllipseSelector(selectedShape); break;
+            case LINE: paintLineSelector(selectedShape); break;
+            case LINEARPATH: paintLinearPathSelector(selectedShape); break;
         }
     }
 }

@@ -19,7 +19,7 @@ import {ShapeType} from "../../utils/types.ts";
 import {multiPointerMap} from "../pointerEvent.ts";
 
 
-export const paintRectangle = (shape: ShapeType) => {
+const paintRectangle = (shape: ShapeType) => {
     ctx.strokeStyle = "black";
     ctx.strokeRect(
         shape.x+shapeTranslateX,
@@ -29,7 +29,7 @@ export const paintRectangle = (shape: ShapeType) => {
     );
 }
 
-export const rectanglePointerDown = (event: PointerEvent) => {
+const rectanglePointerDown = (event: PointerEvent) => {
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
     pointerInfo.shape = {
         type: RECTANGLE,
@@ -42,14 +42,14 @@ export const rectanglePointerDown = (event: PointerEvent) => {
     };
 }
 
-export const rectanglePointerMove = (event: PointerEvent) => {
+const rectanglePointerMove = (event: PointerEvent) => {
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
     pointerInfo.shape!.width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
     pointerInfo.shape!.height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
 }
 
 
-export const selectRectangle = (event: PointerEvent, shape: ShapeType) => {
+const selectRectangle = (event: PointerEvent, shape: ShapeType) => {
     const pointerX = (event.clientX-defaultTranslateX)/scale*100;
     const pointerY = (event.clientY-defaultTranslateY)/scale*100;
     const shapeCenterX = (shape.x+shape.width!)/2+shapeTranslateX;
@@ -59,13 +59,16 @@ export const selectRectangle = (event: PointerEvent, shape: ShapeType) => {
     const deviation = 10/scale*100;
 
     if(pointerX>=shapeCenterX-shapeWidth/2-deviation && pointerX<=shapeCenterX+shapeWidth/2+deviation &&
-        pointerY>=shapeCenterY-shapeHeight/2-deviation && pointerY<=shapeCenterY+shapeHeight/2-deviation)  {
+        pointerY>=shapeCenterY-shapeHeight/2-deviation && pointerY<=shapeCenterY+shapeHeight/2+deviation)  {
         throw shape;
     }
 }
 
 
-export const pointerDownSelectRectangle = (event: PointerEvent) => {
+const pointerDownWhenRectangleSelected = (event: PointerEvent) => {
+
+    normalizeRectangle(selectedShape!);
+
     const pointerX = (event.clientX-defaultTranslateX)/scale*100;
     const pointerY = (event.clientY-defaultTranslateY)/scale*100;
     const shapeCenterX = (selectedShape!.x+selectedShape!.width)/2+shapeTranslateX;
@@ -75,48 +78,45 @@ export const pointerDownSelectRectangle = (event: PointerEvent) => {
     const deviation = 10/scale*100;
     const radiusSquare = 10/scale*100*10/scale*100;
 
-    restructureRectangle(selectedShape!);
+    const normalWidth = 1/scale*100;
+
 
     if(pointerX>=shapeCenterX-shapeWidth/2-deviation && pointerX<=shapeCenterX+shapeWidth/2+deviation &&
         pointerY>=shapeCenterY-shapeHeight/2-deviation && pointerY<=shapeCenterY+shapeHeight/2+deviation)  {
 
-        if(Math.pow(pointerX - (shapeCenterX-shapeWidth/2), 2)+
-        Math.pow(pointerY - (shapeCenterY-shapeHeight/2), 2) <= radiusSquare) {
+        if((pointerX - (shapeCenterX-shapeWidth/2 - normalWidth/2)) ** 2+
+            (pointerY - (shapeCenterY-shapeHeight/2 - normalWidth/2)) ** 2 <= radiusSquare) {
             throw SELECT_TOP_LEFT;
         }
 
-        if(Math.pow(pointerX - shapeCenterX, 2)+
-            Math.pow(pointerY - (shapeCenterY-shapeHeight/2), 2) <= radiusSquare) {
-            throw SELECT_TOP_CENTER;
-        }
-
-        if(Math.pow(pointerX - (shapeCenterX+shapeWidth/2), 2)+
-            Math.pow(pointerY - (shapeCenterY-shapeHeight/2), 2) <= radiusSquare) {
+        if((pointerX - (shapeCenterX+shapeWidth/2+normalWidth/2)) ** 2+
+            (pointerY - (shapeCenterY-shapeHeight/2-normalWidth/2)) ** 2 <= radiusSquare) {
             throw SELECT_TOP_RIGHT;
         }
 
-        if(Math.pow(pointerX - (shapeCenterX+shapeWidth/2), 2)+
-            Math.pow(pointerY - shapeCenterY, 2) <= radiusSquare) {
-            throw SELECT_MIDDLE_RIGHT;
-        }
-
-        if(Math.pow(pointerX - (shapeCenterX+shapeWidth/2), 2)+
-            Math.pow(pointerY - (shapeCenterY+shapeHeight/2), 2) <= radiusSquare) {
+        if((pointerX - (shapeCenterX+shapeWidth/2+normalWidth/2)) ** 2+
+            (pointerY - (shapeCenterY+shapeHeight/2+normalWidth/2)) ** 2 <= radiusSquare) {
             throw SELECT_BOTTOM_RIGHT;
         }
 
-        if(Math.pow(pointerX - shapeCenterX, 2)+
-            Math.pow(pointerY - (shapeCenterY+shapeHeight/2), 2) <= radiusSquare) {
-            throw SELECT_BOTTOM_CENTER;
-        }
-
-        if(Math.pow(pointerX - (shapeCenterX-shapeWidth/2), 2)+
-            Math.pow(pointerY - (shapeCenterY+shapeHeight/2), 2) <= radiusSquare) {
+        if((pointerX - (shapeCenterX-shapeWidth/2-normalWidth/2)) ** 2 +
+            (pointerY - (shapeCenterY+shapeHeight/2+normalWidth/2)) ** 2 <= radiusSquare) {
             throw SELECT_BOTTOM_LEFT;
         }
 
-        if(Math.pow(pointerX - (shapeCenterX-shapeWidth/2), 2)+
-            Math.pow(pointerY - shapeCenterY, 2) <= radiusSquare) {
+        if(Math.abs(pointerY - (shapeCenterY-shapeHeight/2-normalWidth/2)) <= deviation) {
+            throw SELECT_TOP_CENTER;
+        }
+
+        if(Math.abs(pointerX - (shapeCenterX+shapeWidth/2+normalWidth/2)) <= deviation) {
+            throw SELECT_MIDDLE_RIGHT;
+        }
+
+        if(Math.abs(pointerY - (shapeCenterY+shapeHeight/2+normalWidth/2)) <= deviation) {
+            throw SELECT_BOTTOM_CENTER;
+        }
+
+        if(Math.abs(pointerX - (shapeCenterX-shapeWidth/2-normalWidth/2)) <= deviation) {
             throw SELECT_MIDDLE_LEFT;
         }
 
@@ -124,12 +124,12 @@ export const pointerDownSelectRectangle = (event: PointerEvent) => {
     }
 }
 
-export const pointerMoveSelectRectangle = (event: PointerEvent, area: string) => {
+const pointerMoveWhenRectangleSelected = (event: PointerEvent) => {
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
-    const translateX = event.clientX-pointerInfo.shape!.x;
-    const translateY = event.clientY-pointerInfo.shape!.y;
+    const translateX = event.clientX-pointerInfo.shape!.width;
+    const translateY = event.clientY-pointerInfo.shape!.height;
 
-    switch (area) {
+    switch (pointerInfo.selectedArea) {
         case SELECT_SHAPE: {
             selectedShape!.x += translateX / scale * 100;
             selectedShape!.y += translateY / scale * 100;
@@ -176,19 +176,22 @@ export const pointerMoveSelectRectangle = (event: PointerEvent, area: string) =>
     }
 }
 
-const restructureRectangle = (shape: ShapeType) => {
-    const shapeCenterX = (shape.x+shape.width!)/2;
-    const shapeCenterY = (shape.y+shape.height!)/2;
-    const shapeWidth = Math.abs(shape.width!-shape.x);
-    const shapeHeight = Math.abs(shape.height!-shape.y);
+const normalizeRectangle = (shape: ShapeType) => {
+    if(shape.x > shape!.width) {
+        shape.x = shape.x ^ shape.width;
+        shape.width = shape.x ^ shape.width;
+        shape.x = shape.x ^ shape.width;
+    }
 
-    shape.x = shapeCenterX - shapeWidth/2;
-    shape.y = shapeCenterY - shapeHeight/2;
-    shape.width = shapeCenterX + shapeWidth/2;
-    shape.height = shapeCenterY + shapeHeight/2;
+    if(shape.y > shape!.height) {
+        shape.y = shape.y ^ shape.height;
+        shape.height = shape.y ^ shape.height;
+        shape.y = shape.y ^ shape.height;
+    }
 }
 
-export const paintRectangleSelector = (shape: ShapeType) => {
+
+const paintRectangleSelector = (shape: ShapeType) => {
     ctx.save();
     const normalWidth = 1/scale*100;
     const normalRadius = 5/scale*100;
@@ -197,7 +200,7 @@ export const paintRectangleSelector = (shape: ShapeType) => {
     const shapeWidth = Math.abs(shape.width!-shape.x);
     const shapeHeight = Math.abs(shape.height!-shape.y);
 
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = "#2A79FF";
     ctx.lineWidth = normalWidth;
     ctx.strokeRect(
         shapeCenterX-shapeWidth/2-normalWidth/2,
@@ -219,21 +222,21 @@ export const paintRectangleSelector = (shape: ShapeType) => {
     )
 
     // top center
-    ctx.moveTo(shapeCenterX-normalWidth/2+normalRadius,
-        shapeCenterY-shapeHeight/2-normalWidth/2)
-    ctx.arc(
-        shapeCenterX-normalWidth/2,
-        shapeCenterY-shapeHeight/2-normalWidth/2,
-        normalRadius,
-        0,
-        2*Math.PI,
-    )
+    // ctx.moveTo(shapeCenterX+normalRadius,
+    //     shapeCenterY-shapeHeight/2-normalWidth/2)
+    // ctx.arc(
+    //     shapeCenterX,
+    //     shapeCenterY-shapeHeight/2-normalWidth/2,
+    //     normalRadius,
+    //     0,
+    //     2*Math.PI,
+    // )
 
     // top right
-    ctx.moveTo(shapeCenterX+shapeWidth/2-normalWidth/2+normalRadius,
+    ctx.moveTo(shapeCenterX+shapeWidth/2+normalWidth/2+normalRadius,
         shapeCenterY-shapeHeight/2-normalWidth/2)
     ctx.arc(
-        shapeCenterX+shapeWidth/2-normalWidth/2,
+        shapeCenterX+shapeWidth/2+normalWidth/2,
         shapeCenterY-shapeHeight/2-normalWidth/2,
         normalRadius,
         0,
@@ -241,66 +244,77 @@ export const paintRectangleSelector = (shape: ShapeType) => {
     )
 
     // middle right
-    ctx.moveTo(shapeCenterX+shapeWidth/2-normalWidth/2+normalRadius,
-        shapeCenterY-normalWidth/2)
-    ctx.arc(
-        shapeCenterX+shapeWidth/2-normalWidth/2,
-        shapeCenterY-normalWidth/2,
-        normalRadius,
-        0,
-        2*Math.PI,
-    )
+    // ctx.moveTo(shapeCenterX+shapeWidth/2+normalWidth/2+normalRadius,
+    //     shapeCenterY)
+    // ctx.arc(
+    //     shapeCenterX+shapeWidth/2+normalWidth/2,
+    //     shapeCenterY,
+    //     normalRadius,
+    //     0,
+    //     2*Math.PI,
+    // )
 
     // bottom right
-    ctx.moveTo(shapeCenterX+shapeWidth/2-normalWidth/2+normalRadius,
-        shapeCenterY+shapeHeight/2-normalWidth/2)
+    ctx.moveTo(shapeCenterX+shapeWidth/2+normalWidth/2+normalRadius,
+        shapeCenterY+shapeHeight/2+normalWidth/2)
     ctx.arc(
-        shapeCenterX+shapeWidth/2-normalWidth/2,
-        shapeCenterY+shapeHeight/2-normalWidth/2,
+        shapeCenterX+shapeWidth/2+normalWidth/2,
+        shapeCenterY+shapeHeight/2+normalWidth/2,
         normalRadius,
         0,
         2*Math.PI,
     )
 
     // bottom center
-    ctx.moveTo(shapeCenterX-normalWidth/2+normalRadius,
-        shapeCenterY+shapeHeight/2-normalWidth/2)
-    ctx.arc(
-        shapeCenterX-normalWidth/2,
-        shapeCenterY+shapeHeight/2-normalWidth/2,
-        normalRadius,
-        0,
-        2*Math.PI,
-    )
+    // ctx.moveTo(shapeCenterX+normalRadius,
+    //     shapeCenterY+shapeHeight/2+normalWidth/2)
+    // ctx.arc(
+    //     shapeCenterX,
+    //     shapeCenterY+shapeHeight/2+normalWidth/2,
+    //     normalRadius,
+    //     0,
+    //     2*Math.PI,
+    // )
 
     // bottom left
     ctx.moveTo(shapeCenterX-shapeWidth/2-normalWidth/2+normalRadius,
-        shapeCenterY+shapeHeight/2-normalWidth/2)
+        shapeCenterY+shapeHeight/2+normalWidth/2)
     ctx.arc(
         shapeCenterX-shapeWidth/2-normalWidth/2,
-        shapeCenterY+shapeHeight/2-normalWidth/2,
+        shapeCenterY+shapeHeight/2+normalWidth/2,
         normalRadius,
         0,
         2*Math.PI,
     )
 
-    // middle center
-    ctx.moveTo(shapeCenterX-shapeWidth/2-normalWidth/2+normalRadius,
-        shapeCenterY-normalWidth/2)
-    ctx.arc(
-        shapeCenterX-shapeWidth/2-normalWidth/2,
-        shapeCenterY-normalWidth/2,
-        normalRadius,
-        0,
-        2*Math.PI,
-    )
+    // middle left
+    // ctx.moveTo(shapeCenterX-shapeWidth/2-normalWidth/2+normalRadius,
+    //     shapeCenterY)
+    // ctx.arc(
+    //     shapeCenterX-shapeWidth/2-normalWidth/2,
+    //     shapeCenterY,
+    //     normalRadius,
+    //     0,
+    //     2*Math.PI,
+    // )
 
     ctx.fillStyle = "#ffffff";
     ctx.fill();
     ctx.lineWidth = normalRadius/3;
-    ctx.strokeStyle = "#808080"
+    ctx.strokeStyle = "#0000005a"
     ctx.stroke();
 
     ctx.closePath();
     ctx.restore();
+}
+
+
+export {
+    paintRectangle,
+    rectanglePointerDown,
+    rectanglePointerMove,
+    selectRectangle,
+    pointerDownWhenRectangleSelected,
+    pointerMoveWhenRectangleSelected,
+    paintRectangleSelector
 }

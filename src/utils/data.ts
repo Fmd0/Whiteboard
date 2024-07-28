@@ -33,13 +33,13 @@ export const drawToolBarDataList = [
         toolValue: RECTANGLE,
         Svg: RectangleSvg ,
     },
-    {
-        toolValue: CIRCLE,
-        Svg: CircleSvg ,
-    },
+    // {
+    //     toolValue: CIRCLE,
+    //     Svg: CircleSvg ,
+    // },
     {
         toolValue: ELLIPSE,
-        Svg: EllipseSvg,
+        Svg: CircleSvg,
     },
     {
         toolValue: LINE,

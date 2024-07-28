@@ -13,7 +13,8 @@ export interface ShapeType {
     width?: number,
     height?: number,
     radius?: number,
-    linearPathList?: LinearPathType[]
+    linearPathList?: LinearPathType[],
+    hasLinearPathNormalized?: boolean,
 }
 
 export interface PointerInfoShapeType{
@@ -25,11 +26,13 @@ export interface PointerInfoShapeType{
     radius?: number,
     clientX: number,
     clientY: number,
-    linearPathList?: LinearPathType[]
+    linearPathList?: LinearPathType[],
+    currentX?: number,
+    currentY?: number,
+    hasLinearPathNormalized?: boolean,
 }
 
 export interface PointerInfoType {
-    hasMove: boolean;
     drawType: string;
     isThrottle: boolean;
     shape?: PointerInfoShapeType;

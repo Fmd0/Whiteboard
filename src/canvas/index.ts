@@ -32,6 +32,12 @@ export let selectedShape: ShapeType|null = null;
 
 export const setDrawType = (type: string) => {
     drawType = type;
+    // if(type !== POINTER) {
+    //     canvas.style.cursor = "crossHair";
+    // }
+    // else {
+    //     canvas.style.cursor = "default";
+    // }
 }
 
 export const setSelectedShape = (shape: ShapeType|null) => {
@@ -55,6 +61,7 @@ repaint();
 window.addEventListener('pointerdown', handlePointerDown);
 window.addEventListener('pointermove', handlePointerMove);
 window.addEventListener('pointerup', handlePointerUp);
+
 
 
 window.addEventListener('wheel', handleWheel, {

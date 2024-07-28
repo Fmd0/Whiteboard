@@ -1,7 +1,10 @@
 import {selectedShape, setCanvasTranslate} from "../index.ts";
 import {multiPointerMap} from "../pointerEvent.ts";
-import {POINTER, RECTANGLE} from "../../utils/data.ts";
-import {pointerDownSelectRectangle, pointerMoveSelectRectangle} from "./rectangle.ts";
+import {ELLIPSE, LINE, LINEARPATH, POINTER, RECTANGLE} from "../../utils/data.ts";
+import {pointerDownWhenRectangleSelected, pointerMoveWhenRectangleSelected} from "./rectangle.ts";
+import {pointerDownWhenEllipseSelected, pointerMoveWhenEllipseSelected} from "./ellipse.ts";
+import {pointerDownWhenLineSelected, pointerMoveWhenLineSelected} from "./line.ts";
+import {pointerDownWhenLinearPathSelected, pointerMoveWhenLinearPathSelected} from "./linearPath.ts";
 
 
 export const pointerPointerDown = (event: PointerEvent) => {
@@ -10,6 +13,8 @@ export const pointerPointerDown = (event: PointerEvent) => {
         type: POINTER,
         x: event.clientX,
         y: event.clientY,
+        width: event.clientX,
+        height: event.clientY,
         clientX: event.clientX,
         clientY: event.clientY,
     }
@@ -17,7 +22,10 @@ export const pointerPointerDown = (event: PointerEvent) => {
     if(selectedShape) {
         try {
             switch (selectedShape.type) {
-                case RECTANGLE: pointerDownSelectRectangle(event); break;
+                case RECTANGLE: pointerDownWhenRectangleSelected(event); break;
+                case ELLIPSE: pointerDownWhenEllipseSelected(event); break;
+                case LINE: pointerDownWhenLineSelected(event); break;
+                case LINEARPATH: pointerDownWhenLinearPathSelected(event); break;
             }
         }
         catch (area) {
@@ -30,20 +38,24 @@ export const pointerPointerDown = (event: PointerEvent) => {
 
 export const pointerPointerMove = (event: PointerEvent) => {
     const pointerInfo = multiPointerMap.get(event.pointerId)!;
-    const translateX = event.clientX-pointerInfo.shape!.x;
-    const translateY = event.clientY-pointerInfo.shape!.y;
 
     if (pointerInfo.selectedArea !== undefined) {
         switch (selectedShape!.type) {
-            case RECTANGLE: pointerMoveSelectRectangle(event, pointerInfo.selectedArea); break;
+            case RECTANGLE: pointerMoveWhenRectangleSelected(event); break;
+            case ELLIPSE: pointerMoveWhenEllipseSelected(event); break;
+            case LINE: pointerMoveWhenLineSelected(event); break;
+            case LINEARPATH: pointerMoveWhenLinearPathSelected(event); break;
         }
     }
     else {
-        setCanvasTranslate(translateX, translateY);
+        setCanvasTranslate(
+            event.clientX-pointerInfo.shape!.width,
+            event.clientY-pointerInfo.shape!.height
+        );
     }
 
-    pointerInfo.shape!.x = event.clientX;
-    pointerInfo.shape!.y = event.clientY;
+    pointerInfo.shape!.width = event.clientX;
+    pointerInfo.shape!.height = event.clientY;
     pointerInfo.shape!.clientX = event.clientX;
     pointerInfo.shape!.clientY = event.clientY;
 }
