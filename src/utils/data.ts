@@ -3,8 +3,10 @@ import CircleSvg from "../components/svg/CircleSvg.tsx";
 import LinearPathSvg from "../components/svg/LinearPathSvg.tsx";
 import PointerSvg from "../components/svg/PointerSvg.tsx";
 import LineSvg from "../components/svg/LineSvg.tsx";
-import EllipseSvg from "../components/svg/EllipseSvg.tsx";
+// import EllipseSvg from "../components/svg/EllipseSvg.tsx";
+import EraserSvg from "../components/svg/EraserSvg.tsx";
 
+export const ERASE_COLOR = "#0000005a   "
 
 export const POINTER = "pointer";
 export const RECTANGLE = "rectangle";
@@ -12,6 +14,7 @@ export const CIRCLE = "circle";
 export const ELLIPSE = "ellipse";
 export const LINE = "line";
 export const LINEARPATH = "linearPath"
+export const ERASER = "eraser"
 
 export const SELECT_SHAPE = "selectShape";
 export const SELECT_TOP_LEFT = "selectTopLeft";
@@ -48,5 +51,9 @@ export const drawToolBarDataList = [
     {
         toolValue: LINEARPATH,
         Svg: LinearPathSvg,
+    },
+    {
+        toolValue: ERASER,
+        Svg: EraserSvg,
     }
 ]

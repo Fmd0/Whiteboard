@@ -7,6 +7,7 @@ import {
     shapeTranslateY
 } from "../index.ts";
 import {
+    ERASE_COLOR,
     LINEARPATH,
     SELECT_BOTTOM_LEFT,
     SELECT_BOTTOM_RIGHT,
@@ -43,7 +44,13 @@ const paintLinearPath = (shape: ShapeType) => {
     }
 
 
-    ctx.strokeStyle = "black";
+    if(shape.hasDeleted === true) {
+        ctx.strokeStyle = ERASE_COLOR;
+    }
+    else {
+        ctx.strokeStyle = "#000000";
+    }
+
     ctx.lineWidth = 4;
 
     ctx.stroke();

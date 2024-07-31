@@ -5,7 +5,7 @@ import {
     scale, selectedShape,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
-import {LINE, SELECT_BOTTOM_RIGHT, SELECT_SHAPE, SELECT_TOP_LEFT} from "../../utils/data.ts";
+import {ERASE_COLOR, LINE, SELECT_BOTTOM_RIGHT, SELECT_SHAPE, SELECT_TOP_LEFT} from "../../utils/data.ts";
 import {ShapeType} from "../../utils/types.ts";
 import {multiPointerMap} from "../pointerEvent.ts";
 
@@ -15,7 +15,13 @@ const paintLine = (shape: ShapeType) => {
     ctx.moveTo(shape.x+shapeTranslateX, shape.y+shapeTranslateY);
     ctx.lineTo(shape.width!+shapeTranslateX, shape.height!+shapeTranslateY);
 
-    ctx.strokeStyle = "black";
+    if(shape.hasDeleted === true) {
+        ctx.strokeStyle = ERASE_COLOR;
+    }
+    else {
+        ctx.strokeStyle = "#000000";
+    }
+
     ctx.stroke();
     ctx.closePath();
 }

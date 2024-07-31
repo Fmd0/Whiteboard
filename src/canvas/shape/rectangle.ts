@@ -8,6 +8,7 @@ import {
     selectedShape
 } from "../index.ts";
 import {
+    ERASE_COLOR,
     RECTANGLE, SELECT_BOTTOM_CENTER, SELECT_BOTTOM_LEFT, SELECT_BOTTOM_RIGHT, SELECT_MIDDLE_LEFT,
     SELECT_MIDDLE_RIGHT,
     SELECT_SHAPE,
@@ -20,7 +21,14 @@ import {multiPointerMap} from "../pointerEvent.ts";
 
 
 const paintRectangle = (shape: ShapeType) => {
-    ctx.strokeStyle = "black";
+
+    if(shape.hasDeleted === true) {
+        ctx.strokeStyle = ERASE_COLOR;
+    }
+    else {
+        ctx.strokeStyle = "#000000";
+    }
+
     ctx.strokeRect(
         shape.x+shapeTranslateX,
         shape.y+shapeTranslateY,
@@ -300,8 +308,8 @@ const paintRectangleSelector = (shape: ShapeType) => {
 
     ctx.fillStyle = "#ffffff";
     ctx.fill();
-    ctx.lineWidth = normalRadius/3;
-    ctx.strokeStyle = "#0000005a"
+    ctx.lineWidth = normalRadius/2.5;
+    ctx.strokeStyle = "#00000048"
     ctx.stroke();
 
     ctx.closePath();

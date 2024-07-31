@@ -1,4 +1,4 @@
-import {ELLIPSE, LINE, LINEARPATH, RECTANGLE} from "../utils/data.ts";
+import {ELLIPSE, ERASER, LINE, LINEARPATH, RECTANGLE} from "../utils/data.ts";
 import {paintLinearPath, paintLinearPathSelector} from "./shape/linearPath.ts";
 import {paintRectangle, paintRectangleSelector} from "./shape/rectangle.ts";
 import {paintEllipse, paintEllipseSelector} from "./shape/ellipse.ts";
@@ -14,6 +14,7 @@ import {
     shapeTranslateY
 } from "./index.ts";
 import {hasMoved, multiPointerMap} from "./pointerEvent.ts";
+import {paintEraser} from "./shape/eraser.ts";
 
 
 const drawBackground = (gap: number) => {
@@ -82,6 +83,7 @@ export const repaint = () => {
                 case ELLIPSE: paintEllipse(shape); break;
                 case LINE: paintLine(shape); break;
                 case LINEARPATH: paintLinearPath(shape); break;
+                case ERASER: paintEraser(shape); break;
             }
         }
     })

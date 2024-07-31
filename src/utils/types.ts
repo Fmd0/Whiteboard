@@ -15,6 +15,7 @@ export interface ShapeType {
     radius?: number,
     linearPathList?: LinearPathType[],
     hasLinearPathNormalized?: boolean,
+    hasDeleted?: boolean,
 }
 
 export interface PointerInfoShapeType{

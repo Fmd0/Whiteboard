@@ -5,7 +5,7 @@ import {
     scale,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
-import {ELLIPSE} from "../../utils/data.ts";
+import {ELLIPSE, ERASE_COLOR} from "../../utils/data.ts";
 import {ShapeType} from "../../utils/types.ts";
 import {multiPointerMap} from "../pointerEvent.ts";
 import {
@@ -27,7 +27,13 @@ const paintEllipse = (shape: ShapeType) => {
         2*Math.PI,
     )
 
-    ctx.strokeStyle = "black";
+    if(shape.hasDeleted === true) {
+        ctx.strokeStyle = ERASE_COLOR;
+    }
+    else {
+        ctx.strokeStyle = "#000000";
+    }
+
     ctx.stroke();
     ctx.closePath();
 }
