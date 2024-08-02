@@ -11,7 +11,7 @@ const DrawToolBar = () => {
 
 
     return (
-        <div className="fixed top-1/2 -translate-y-1/2 left-2 bg-white flex flex-col gap-1 p-1 rounded-md
+        <div className="fixed top-1/2 -translate-y-1/2 left-3 bg-white flex flex-col gap-1 p-1 rounded-md
         shadow-[0px_0px_16px_rgba(0,0,0,0.1)]"
              onPointerDown={(e) => e.stopPropagation()}
              onPointerMove={(e) => e.stopPropagation()}

@@ -57,3 +57,10 @@ export const drawToolBarDataList = [
         Svg: EraserSvg,
     }
 ]
+
+
+export const scaleValueArray: number[] = [
+    1, 2, 3, 5, 10, 15, 25, 36, 50, 75, 100, 125, 150, 200, 250, 300, 400
+]
+
+export const scaleValueArrayLength: number = 17;

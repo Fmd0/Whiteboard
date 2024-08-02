@@ -1,5 +1,5 @@
 import {ShapeType} from "../utils/types.ts";
-import {handleWheel} from "./wheelEvent.ts";
+// import {handleWheel} from "./wheelEvent.ts";
 import {handlePointerDown, handlePointerMove, handlePointerUp} from "./pointerEvent.ts";
 import {repaint} from "./paint.ts";
 import {POINTER} from "../utils/data.ts";
@@ -23,7 +23,6 @@ export const ctx = canvas.getContext("2d")!;
 ctx.scale(devicePixelRatio, devicePixelRatio);
 
 
-export const backgroundGridGap = 75;
 export let scale = 100;
 export const defaultTranslateX = Math.floor(canvasWidth/2);
 export const defaultTranslateY = Math.floor(canvasHeight/2);
@@ -42,12 +41,6 @@ repaint();
 
 export const setDrawType = (type: string) => {
     drawType = type;
-    // if(type !== POINTER) {
-    //     canvas.style.cursor = "crossHair";
-    // }
-    // else {
-    //     canvas.style.cursor = "default";
-    // }
 }
 
 
@@ -76,9 +69,9 @@ window.addEventListener('pointerup', handlePointerUp);
 
 
 
-window.addEventListener('wheel', handleWheel, {
-    passive: false,
-});
+// window.addEventListener('wheel', handleWheel, {
+//     passive: false,
+// });
 
 
 window.addEventListener('scroll', (event) => {

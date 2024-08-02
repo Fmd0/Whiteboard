@@ -55,12 +55,15 @@ const selectLine = (event: PointerEvent, shape: ShapeType) => {
     const lineEndPointY = shape.height+shapeTranslateY;
     const deviation = 10/scale*100;
 
-    if(Math.abs(
-        (lineEndPointY-lineStartPointY)*pointerX -
-        (lineEndPointX-lineStartPointX)*pointerY +
-        (lineEndPointX*lineStartPointY - lineStartPointX*lineEndPointY)
-    )/(((lineEndPointY-lineStartPointY)**2 + (lineEndPointX-lineStartPointX)**2) ** 0.5) <= deviation) {
-        throw shape;
+    if(Math.abs(pointerX-(lineStartPointX+lineEndPointX)/2) <= Math.abs(lineStartPointX-lineEndPointX)/2+deviation &&
+        Math.abs(pointerY-(lineStartPointY+lineEndPointY)/2) <= Math.abs(lineStartPointY-lineEndPointY)/2+deviation ){
+        if(Math.abs(
+            (lineEndPointY-lineStartPointY)*pointerX -
+            (lineEndPointX-lineStartPointX)*pointerY +
+            (lineEndPointX*lineStartPointY - lineStartPointX*lineEndPointY)
+        )/(((lineEndPointY-lineStartPointY)**2 + (lineEndPointX-lineStartPointX)**2) ** 0.5) <= deviation) {
+            throw shape;
+        }
     }
 }
 
@@ -78,23 +81,26 @@ const pointerDownWhenLineSelected = (event: PointerEvent) => {
     const radiusSquare = 10/scale*100*10/scale*100;
 
 
-    if(Math.abs(
-        (lineEndPointY-lineStartPointY)*pointerX -
-        (lineEndPointX-lineStartPointX)*pointerY +
-        (lineEndPointX*lineStartPointY - lineStartPointX*lineEndPointY)
-    ) /(((lineEndPointY-lineStartPointY)**2 + (lineEndPointX-lineStartPointX)**2) ** 0.5) <= deviation) {
+    if(Math.abs(pointerX-(lineStartPointX+lineEndPointX)/2) <= Math.abs(lineStartPointX-lineEndPointX)/2+deviation &&
+        Math.abs(pointerY-(lineStartPointY+lineEndPointY)/2) <= Math.abs(lineStartPointY-lineEndPointY)/2+deviation ) {
+        if(Math.abs(
+            (lineEndPointY-lineStartPointY)*pointerX -
+            (lineEndPointX-lineStartPointX)*pointerY +
+            (lineEndPointX*lineStartPointY - lineStartPointX*lineEndPointY)
+        ) /(((lineEndPointY-lineStartPointY)**2 + (lineEndPointX-lineStartPointX)**2) ** 0.5) <= deviation) {
 
-        if((pointerX-lineStartPointX)**2 +
-            (pointerY-lineStartPointY)**2 <= radiusSquare) {
-            throw SELECT_TOP_LEFT;
+            if((pointerX-lineStartPointX)**2 +
+                (pointerY-lineStartPointY)**2 <= radiusSquare) {
+                throw SELECT_TOP_LEFT;
+            }
+
+            if((pointerX-lineEndPointX)**2 +
+                (pointerY-lineEndPointY)**2 <= radiusSquare) {
+                throw SELECT_BOTTOM_RIGHT;
+            }
+
+            throw SELECT_SHAPE;
         }
-
-        if((pointerX-lineEndPointX)**2 +
-            (pointerY-lineEndPointY)**2 <= radiusSquare) {
-            throw SELECT_BOTTOM_RIGHT;
-        }
-
-        throw SELECT_SHAPE;
     }
 
 }

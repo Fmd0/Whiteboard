@@ -1,5 +1,5 @@
-import DrawToolBar from "./components/drawTool/DrawToolBar.tsx";
-import ControlBar from "./components/ControlBar.tsx";
+import DrawToolBar from "./components/tool/DrawToolBar.tsx";
+import ScaleToolBar from "./components/tool/ScaleToolBar.tsx";
 
 
 const App = () => {
@@ -7,7 +7,7 @@ const App = () => {
     return (
         <>
             <DrawToolBar />
-            <ControlBar />
+            <ScaleToolBar />
         </>
     )
 }
