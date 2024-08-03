@@ -2,8 +2,6 @@
 export interface LinearPathType {
     x: number,
     y: number,
-    width: number,
-    height: number,
 }
 
 export interface ShapeType {
@@ -16,6 +14,7 @@ export interface ShapeType {
     linearPathList?: LinearPathType[],
     hasLinearPathNormalized?: boolean,
     hasDeleted?: boolean,
+    styleConfig: ShapeStyleType,
 }
 
 export interface PointerInfoShapeType{
@@ -28,9 +27,8 @@ export interface PointerInfoShapeType{
     clientX: number,
     clientY: number,
     linearPathList?: LinearPathType[],
-    currentX?: number,
-    currentY?: number,
     hasLinearPathNormalized?: boolean,
+    styleConfig: ShapeStyleType,
 }
 
 export interface PointerInfoType {
@@ -39,4 +37,9 @@ export interface PointerInfoType {
     shape?: PointerInfoShapeType;
     usedForMultiPointer: boolean;
     selectedArea?: string,
+}
+
+export interface ShapeStyleType {
+    strokeStyle: string,
+    lineWidth: number,
 }

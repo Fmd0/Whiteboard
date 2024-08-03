@@ -1,7 +1,7 @@
 import {
     ctx,
     defaultTranslateX,
-    defaultTranslateY,
+    defaultTranslateY, globalStyleConfig,
     scale, selectedShape,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
@@ -11,7 +11,9 @@ import {multiPointerMap} from "../pointerEvent.ts";
 
 
 const paintLine = (shape: ShapeType) => {
+    ctx.save();
     ctx.beginPath();
+
     ctx.moveTo(shape.x+shapeTranslateX, shape.y+shapeTranslateY);
     ctx.lineTo(shape.width!+shapeTranslateX, shape.height!+shapeTranslateY);
 
@@ -19,11 +21,15 @@ const paintLine = (shape: ShapeType) => {
         ctx.strokeStyle = ERASE_COLOR;
     }
     else {
-        ctx.strokeStyle = "#000000";
+        ctx.strokeStyle = shape.styleConfig.strokeStyle;
     }
-
+    ctx.lineWidth = shape.styleConfig.lineWidth;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.stroke();
+
     ctx.closePath();
+    ctx.restore();
 }
 
 const linePointerDown = (event: PointerEvent) => {
@@ -36,6 +42,9 @@ const linePointerDown = (event: PointerEvent) => {
         height: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         clientX: event.clientX,
         clientY: event.clientY,
+        styleConfig: {
+            ...globalStyleConfig,
+        }
     };
 }
 
@@ -148,7 +157,7 @@ const normalizeLine = (shape: ShapeType) => {
 
 const paintLineSelector = (shape: ShapeType) => {
     ctx.save();
-    const normalRadius = 5/scale*100;
+    const normalRadius = 5.5/scale*100;
     const lineStartPointX = shape.x+shapeTranslateX;
     const lineStartPointY = shape.y+shapeTranslateY;
     const lineEndPointX = shape.width+shapeTranslateX;
@@ -178,7 +187,7 @@ const paintLineSelector = (shape: ShapeType) => {
 
     ctx.fillStyle = "#ffffff";
     ctx.fill();
-    ctx.lineWidth = normalRadius/3;
+    ctx.lineWidth = normalRadius/2;
     ctx.strokeStyle = "#2A79FF";
     ctx.stroke();
 

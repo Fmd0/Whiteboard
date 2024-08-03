@@ -1,11 +1,9 @@
-import {ShapeType} from "../utils/types.ts";
-// import {handleWheel} from "./wheelEvent.ts";
-import {handlePointerDown, handlePointerMove, handlePointerUp} from "./pointerEvent.ts";
+import {ShapeStyleType, ShapeType} from "../utils/types.ts";
 import {repaint} from "./paint.ts";
 import {POINTER} from "../utils/data.ts";
 
 
-// initialize some global variables
+// initialize global variables
 export let shapeList: ShapeType[] = [];
 export let drawType = POINTER;
 const canvasWidth = window.innerWidth;
@@ -24,6 +22,7 @@ ctx.scale(devicePixelRatio, devicePixelRatio);
 
 
 export let scale = 100;
+export let scaleCopy = 100;
 export const defaultTranslateX = Math.floor(canvasWidth/2);
 export const defaultTranslateY = Math.floor(canvasHeight/2);
 export let shapeTranslateX = 0;
@@ -34,6 +33,10 @@ export const center = {
     hasInitialized: false,
 }
 export let selectedShape: ShapeType|null = null;
+export let globalStyleConfig: ShapeStyleType = {
+    strokeStyle: "#000000",
+    lineWidth: 2,
+}
 
 ctx.translate(defaultTranslateX, defaultTranslateY);
 repaint();
@@ -43,6 +46,9 @@ export const setDrawType = (type: string) => {
     drawType = type;
 }
 
+export const setGlobalStyleConfig = (newStyleConfig: ShapeStyleType) => {
+    globalStyleConfig = newStyleConfig;
+}
 
 export const setSelectedShape = (shape: ShapeType|null) => {
     selectedShape = shape;
@@ -57,22 +63,19 @@ export const setCanvasScale = (newScale: number) => {
     scale = newScale;
 }
 
+export const setCanvasScaleCopy = (newScale: number) => {
+    scaleCopy = newScale;
+}
+
 export const setCanvasTranslate = (newTranslateX: number, newTranslateY: number) => {
     shapeTranslateX += newTranslateX/scale*100;
     shapeTranslateY += newTranslateY/scale*100;
 }
 
 
-window.addEventListener('pointerdown', handlePointerDown);
-window.addEventListener('pointermove', handlePointerMove);
-window.addEventListener('pointerup', handlePointerUp);
-
-
-
-// window.addEventListener('wheel', handleWheel, {
-//     passive: false,
-// });
-
+// window.addEventListener('pointerdown', handlePointerDown);
+// window.addEventListener('pointermove', handlePointerMove);
+// window.addEventListener('pointerup', handlePointerUp);
 
 window.addEventListener('scroll', (event) => {
     event.preventDefault();

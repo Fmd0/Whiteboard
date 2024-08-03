@@ -1,4 +1,12 @@
-import {ELLIPSE, ERASER, LINE, LINEARPATH, RECTANGLE} from "../utils/data.ts";
+import {
+    CANVAS_BACKGROUND_COLOR,
+    CANVAS_GRID_COLOR,
+    ELLIPSE,
+    ERASER,
+    LINE,
+    LINEARPATH,
+    RECTANGLE
+} from "../utils/data.ts";
 import {paintLinearPath, paintLinearPathSelector} from "./shape/linearPath.ts";
 import {paintRectangle, paintRectangleSelector} from "./shape/rectangle.ts";
 import {paintEllipse, paintEllipseSelector} from "./shape/ellipse.ts";
@@ -32,13 +40,15 @@ const backgroundGridGapWidthMap = {
 
 
 const drawBackground = () => {
+    ctx.save();
+
     let currentBackgroundGridGap = backgroundGridGapStarter;
     while (currentBackgroundGridGap*scale <= multipleValue) {
         currentBackgroundGridGap*=4;
     }
 
     // draw background color
-    ctx.fillStyle = "#F2F2F2";
+    ctx.fillStyle = CANVAS_BACKGROUND_COLOR;
     ctx.fillRect(
         -defaultTranslateX/scale*100,
         -defaultTranslateY/scale*100,
@@ -69,7 +79,7 @@ const drawBackground = () => {
     }
 
     ctx.lineWidth = backgroundGridGapWidthMap[currentBackgroundGridGap];
-    ctx.strokeStyle = "#E2E2E2";
+    ctx.strokeStyle = CANVAS_GRID_COLOR;
     ctx.stroke();
     ctx.closePath();
 
@@ -91,11 +101,12 @@ const drawBackground = () => {
         }
 
         ctx.lineWidth = backgroundGridGapWidthMap[currentBackgroundGridGap*4];
-        ctx.strokeStyle = "#E2E2E2";
+        ctx.strokeStyle = CANVAS_GRID_COLOR;
         ctx.stroke();
         ctx.closePath();
-
     }
+
+    ctx.restore();
 }
 
 
@@ -108,6 +119,7 @@ export const repaint = () => {
         window.innerWidth/scale*100,
         window.innerHeight/scale*100
     );
+
     drawBackground();
 
     for(const shape of shapeList) {

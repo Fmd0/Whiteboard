@@ -1,7 +1,7 @@
 import {
     ctx,
     defaultTranslateX,
-    defaultTranslateY,
+    defaultTranslateY, globalStyleConfig,
     scale,
     shapeTranslateX, shapeTranslateY
 } from "../index.ts";
@@ -16,7 +16,9 @@ import {
 
 
 const paintEllipse = (shape: ShapeType) => {
+    ctx.save();
     ctx.beginPath();
+
     ctx.ellipse(
         (shape.x+shape.width)/2+shapeTranslateX,
         (shape.y+shape.height)/2+shapeTranslateY,
@@ -31,11 +33,13 @@ const paintEllipse = (shape: ShapeType) => {
         ctx.strokeStyle = ERASE_COLOR;
     }
     else {
-        ctx.strokeStyle = "#000000";
+        ctx.strokeStyle = shape.styleConfig.strokeStyle;
     }
-
+    ctx.lineWidth = shape.styleConfig.lineWidth;
     ctx.stroke();
+
     ctx.closePath();
+    ctx.restore();
 }
 
 const ellipsePointerDown = (event: PointerEvent) => {
@@ -46,6 +50,9 @@ const ellipsePointerDown = (event: PointerEvent) => {
         y: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         clientX: event.clientX,
         clientY: event.clientY,
+        styleConfig: {
+            ...globalStyleConfig
+        }
     };
 }
 

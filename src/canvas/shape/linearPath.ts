@@ -1,7 +1,7 @@
 import {
     ctx,
     defaultTranslateX,
-    defaultTranslateY,
+    defaultTranslateY, globalStyleConfig,
     scale, selectedShape,
     shapeTranslateX,
     shapeTranslateY
@@ -24,36 +24,37 @@ const paintLinearPath = (shape: ShapeType) => {
     ctx.save();
     ctx.beginPath();
 
+    const linearPathList = shape.linearPathList!;
+    const linearPathListLength = linearPathList.length;
+
     if(shape.hasLinearPathNormalized === true) {
         const XMin = shape.x;
         const YMin = shape.y;
         const width = shape.width! - XMin;
         const height = shape.height! - YMin;
-
-        shape.linearPathList!.forEach(linearPath => {
-            ctx.moveTo(linearPath.x*width+XMin+shapeTranslateX, linearPath.y*height+YMin+shapeTranslateY);
-            ctx.lineTo(linearPath.width!*width+XMin+shapeTranslateX, linearPath.height!*height+YMin+shapeTranslateY);
-        })
-
+        ctx.moveTo(linearPathList[0].x*width+XMin+shapeTranslateX, linearPathList[0].y*height+YMin+shapeTranslateY);
+        for (let i = 1; i < linearPathListLength; i++) {
+            ctx.lineTo(linearPathList[i].x*width+XMin+shapeTranslateX, linearPathList[i].y*height+YMin+shapeTranslateY);
+        }
     }
     else {
-        shape.linearPathList!.forEach(linearPath => {
-            ctx.moveTo(linearPath.x+shapeTranslateX, linearPath.y+shapeTranslateY);
-            ctx.lineTo(linearPath.width!+shapeTranslateX, linearPath.height!+shapeTranslateY);
-        })
+        ctx.moveTo(linearPathList[0].x+shapeTranslateX, linearPathList[0].y+shapeTranslateY);
+        for (let i = 1; i < linearPathListLength; i++) {
+            ctx.lineTo(linearPathList[i].x+shapeTranslateX, linearPathList[i].y+shapeTranslateY);
+        }
     }
-
 
     if(shape.hasDeleted === true) {
         ctx.strokeStyle = ERASE_COLOR;
     }
     else {
-        ctx.strokeStyle = "#000000";
+        ctx.strokeStyle = shape.styleConfig.strokeStyle;
     }
-
-    ctx.lineWidth = 4;
-
+    ctx.lineWidth = shape.styleConfig.lineWidth;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
     ctx.stroke();
+
     ctx.closePath();
     ctx.restore();
 }
@@ -71,30 +72,30 @@ const linearPathPointerDown = (event: PointerEvent) => {
         height: shapeY,
         clientX: event.clientX,
         clientY: event.clientY,
-        linearPathList: [],
-        currentX: shapeX,
-        currentY: shapeY,
+        linearPathList: [{
+            x: shapeX,
+            y: shapeY,
+        }],
+        styleConfig: {
+            ...globalStyleConfig,
+        }
     }
 }
 
 const linearPathPointerMove = (event: PointerEvent) => {
     const shape = multiPointerMap.get(event.pointerId)!.shape!;
-    const width = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
-    const height = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
+    const shapeX = (event.clientX-defaultTranslateX)/scale*100-shapeTranslateX;
+    const shapeY = (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY;
 
     shape.linearPathList!.push({
-        x: shape.currentX!,
-        y: shape.currentY!,
-        width,
-        height,
+        x: shapeX,
+        y: shapeY,
     })
-    shape.currentX = width;
-    shape.currentY = height;
 
-    shape.width = shape.width>width?shape.width:width;
-    shape.x = shape.x<width?shape.x:width;
-    shape.height = shape.height>height?shape.height:height;
-    shape.y = shape.y<height?shape.y:height;
+    shape.width = shape.width>shapeX?shape.width:shapeX;
+    shape.x = shape.x<shapeX?shape.x:shapeX;
+    shape.height = shape.height>shapeY?shape.height:shapeY;
+    shape.y = shape.y<shapeY?shape.y:shapeY;
 }
 
 const selectLinearPath = selectRectangle;
@@ -102,7 +103,6 @@ const selectLinearPath = selectRectangle;
 const pointerDownWhenLinearPathSelected = (event: PointerEvent) => {
 
     normalizeLinearPath(selectedShape!);
-
     const pointerX = (event.clientX-defaultTranslateX)/scale*100;
     const pointerY = (event.clientY-defaultTranslateY)/scale*100;
     const shapeCenterX = (selectedShape!.x+selectedShape!.width)/2+shapeTranslateX;
@@ -111,7 +111,6 @@ const pointerDownWhenLinearPathSelected = (event: PointerEvent) => {
     const shapeHeight = Math.abs(selectedShape!.height-selectedShape!.y);
     const deviation = 10/scale*100;
     const radiusSquare = 10/scale*100*10/scale*100;
-
     const normalWidth = 1/scale*100;
 
 
@@ -167,8 +166,6 @@ const normalizeLinearPath = (shape: ShapeType) => {
         return {
             x: (linearPath.x-XMin)/width,
             y: (linearPath.y-YMin)/height,
-            width: (linearPath.width-XMin)/width,
-            height: (linearPath.height-YMin)/height,
         }
     })
 

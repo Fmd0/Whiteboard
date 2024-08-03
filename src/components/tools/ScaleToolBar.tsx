@@ -1,17 +1,21 @@
 import SubtractSvg from "../svg/SubtractSvg.tsx";
 import AddSvg from "../svg/AddSvg.tsx";
-import {useEffect, useRef, useState} from "react";
+import {useEffect} from "react";
 import {scaleValueArray, scaleValueArrayLength} from "../../utils/data.ts";
-import {scale, setCanvasScale, setCanvasTranslate} from "../../canvas";
+import {scale, scaleCopy, selectedShape, setCanvasScale, setCanvasScaleCopy, setCanvasTranslate} from "../../canvas";
 import {repaint} from "../../canvas/paint.ts";
+import {useCanvasInfoStore} from "../../hooks/useCanvasInfoStore.ts";
 
 
 const DrawToolBar = () => {
 
-    const [scaleState, setScaleState] = useState<number>(100);
-    const scaleRef = useRef<number>(100);
-    const scaleRefCopy = useRef<number>(100);
+    const {
+        setTopAndLeft,
+        scaleState,
+        setScaleState,
+    } = useCanvasInfoStore();
 
+    // implement the animation of scale add and subtract
     const transformScale = (from: number, to: number, includeCopy: boolean) => {
 
         const times = from<=20 && to<=20 ? 5 : 10;
@@ -22,9 +26,8 @@ const DrawToolBar = () => {
             setTimeout(() => {
                 setScaleState(from+gap*i);
                 setCanvasScale(from+gap*i);
-                scaleRef.current = from+gap*i;
                 if(includeCopy) {
-                    scaleRefCopy.current = from+gap*i;
+                    setCanvasScaleCopy(from+gap*i);
                 }
                 repaint();
             }, i*interval);
@@ -33,51 +36,50 @@ const DrawToolBar = () => {
         setTimeout(() => {
             setScaleState(to);
             setCanvasScale(to);
-            scaleRef.current = to;
             if(includeCopy) {
-                scaleRefCopy.current = to;
+                setCanvasScaleCopy(to);
             }
             repaint();
         }, (times-1)*interval);
     }
 
     const handleClickSubtract = () => {
-        if(scaleRef.current === 1) {
+        if(scale === 1) {
             return;
         }
         for (let i = scaleValueArrayLength-1; i >= 0; i--) {
             if(scaleValueArray[i] < scaleState) {
-                transformScale(scaleRef.current, scaleValueArray[i], true);
+                transformScale(scale, scaleValueArray[i], true);
                 break;
             }
         }
     }
 
     const handleClickAdd = () => {
-        if(scaleRef.current === 400) {
+        if(scale === 400) {
             return;
         }
         for (let i = 0; i < scaleValueArrayLength; i++) {
             if(scaleValueArray[i] > scaleState) {
-                transformScale(scaleRef.current, scaleValueArray[i], true);
+                transformScale(scale, scaleValueArray[i], true);
                 break;
             }
         }
     }
 
     const handleClickToggle = () => {
-        if(scaleRef.current !== 100) {
-            transformScale(scaleRef.current, 100, false);
+        if(scale !== 100) {
+            transformScale(scale, 100, false);
         }
         else {
-            transformScale(100, scaleRefCopy.current, false);
+            transformScale(100, scaleCopy, false);
         }
         repaint();
     }
 
     const handleWheel = (() => {
         let isThrottle = false;
-        return (e: WheelEvent) => {
+        return  (e: WheelEvent) => {
             e.preventDefault();
             if(isThrottle) {
                 return;
@@ -94,18 +96,21 @@ const DrawToolBar = () => {
                 );
             }
             else {
-                let currentScale = scaleRef.current*(1-e.deltaY*0.01);
+                let currentScale = scale*(1-e.deltaY*0.01);
                 currentScale = currentScale < 1 ? 1: currentScale;
                 currentScale = currentScale > 400 ? 400 : currentScale;
-
                 setScaleState(currentScale);
                 setCanvasScale(currentScale);
-                scaleRef.current = currentScale;
-                scaleRefCopy.current = currentScale;
+                setCanvasScaleCopy(currentScale);
+            }
+
+            if(selectedShape) {
+                setTopAndLeft(selectedShape);
             }
             repaint();
         }
     })();
+
 
     useEffect(() => {
         window.addEventListener("wheel", handleWheel, {

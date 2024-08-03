@@ -5,7 +5,7 @@ import {
     shapeTranslateY,
     defaultTranslateX,
     defaultTranslateY,
-    selectedShape
+    selectedShape, globalStyleConfig
 } from "../index.ts";
 import {
     ERASE_COLOR,
@@ -21,20 +21,25 @@ import {multiPointerMap} from "../pointerEvent.ts";
 
 
 const paintRectangle = (shape: ShapeType) => {
+    ctx.save();
 
     if(shape.hasDeleted === true) {
         ctx.strokeStyle = ERASE_COLOR;
     }
     else {
-        ctx.strokeStyle = "#000000";
+        ctx.strokeStyle = shape.styleConfig.strokeStyle;
     }
-
+    ctx.lineWidth = shape.styleConfig.lineWidth;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
     ctx.strokeRect(
         shape.x+shapeTranslateX,
         shape.y+shapeTranslateY,
         shape.width!-shape.x,
         shape.height!-shape.y,
     );
+
+    ctx.restore();
 }
 
 const rectanglePointerDown = (event: PointerEvent) => {
@@ -47,6 +52,9 @@ const rectanglePointerDown = (event: PointerEvent) => {
         height: (event.clientY-defaultTranslateY)/scale*100-shapeTranslateY,
         clientX: event.clientX,
         clientY: event.clientY,
+        styleConfig: {
+            ...globalStyleConfig,
+        }
     };
 }
 
@@ -202,7 +210,7 @@ const normalizeRectangle = (shape: ShapeType) => {
 const paintRectangleSelector = (shape: ShapeType) => {
     ctx.save();
     const normalWidth = 1/scale*100;
-    const normalRadius = 5/scale*100;
+    const normalRadius = 5.5/scale*100;
     const shapeCenterX = (shape.x+shape.width!)/2+shapeTranslateX;
     const shapeCenterY = (shape.y+shape.height!)/2+shapeTranslateY;
     const shapeWidth = Math.abs(shape.width!-shape.x);
@@ -308,8 +316,8 @@ const paintRectangleSelector = (shape: ShapeType) => {
 
     ctx.fillStyle = "#ffffff";
     ctx.fill();
-    ctx.lineWidth = normalRadius/2.5;
-    ctx.strokeStyle = "#00000048"
+    ctx.lineWidth = normalRadius/2;
+    ctx.strokeStyle = "#00000058"
     ctx.stroke();
 
     ctx.closePath();

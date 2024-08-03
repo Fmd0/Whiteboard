@@ -3,11 +3,15 @@ import {drawToolBarDataList, POINTER} from "../../utils/data.ts";
 import DrawToolBarItem from "./DrawToolBarItem.tsx";
 import {setDrawType, setSelectedShape} from "../../canvas";
 import {repaint} from "../../canvas/paint.ts";
+import {useCanvasInfoStore} from "../../hooks/useCanvasInfoStore.ts";
 
 
 const DrawToolBar = () => {
 
     const [tool, setTool] = useState(POINTER);
+    const {
+        setIsDisplayed
+    } = useCanvasInfoStore();
 
 
     return (
@@ -24,6 +28,7 @@ const DrawToolBar = () => {
                                          setTool(d.toolValue);
                                          setDrawType(d.toolValue);
                                          setSelectedShape(null);
+                                         setIsDisplayed(false);
                                          repaint();
                                      }}
                                      itemValue={d.toolValue}

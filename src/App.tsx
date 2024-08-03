@@ -1,5 +1,7 @@
-import DrawToolBar from "./components/tool/DrawToolBar.tsx";
-import ScaleToolBar from "./components/tool/ScaleToolBar.tsx";
+import DrawToolBar from "./components/tools/DrawToolBar.tsx";
+import ScaleToolBar from "./components/tools/ScaleToolBar.tsx";
+import StyleToolBar from "./components/tools/StyleToolBar.tsx";
+import PointerEvent from "./components/canvas/PointerEvent.tsx";
 
 
 const App = () => {
@@ -8,6 +10,8 @@ const App = () => {
         <>
             <DrawToolBar />
             <ScaleToolBar />
+            <StyleToolBar />
+            <PointerEvent />
         </>
     )
 }

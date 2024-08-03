@@ -6,11 +6,15 @@ import LineSvg from "../components/svg/LineSvg.tsx";
 // import EllipseSvg from "../components/svg/EllipseSvg.tsx";
 import EraserSvg from "../components/svg/EraserSvg.tsx";
 
-export const ERASE_COLOR = "#0000005a   "
+export const ERASE_COLOR = "#0000005a"
+export const ERASER_WIDTH = 20;
+export const CANVAS_BACKGROUND_COLOR = "#F2F2F2"
+export const CANVAS_GRID_COLOR = "#E2E2E2"
+
 
 export const POINTER = "pointer";
 export const RECTANGLE = "rectangle";
-export const CIRCLE = "circle";
+// export const CIRCLE = "circle";
 export const ELLIPSE = "ellipse";
 export const LINE = "line";
 export const LINEARPATH = "linearPath"

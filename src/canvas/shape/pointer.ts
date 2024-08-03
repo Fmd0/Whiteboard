@@ -17,6 +17,10 @@ export const pointerPointerDown = (event: PointerEvent) => {
         height: event.clientY,
         clientX: event.clientX,
         clientY: event.clientY,
+        styleConfig: {
+            strokeStyle: "transparent",
+            lineWidth: 0,
+        }
     }
 
     if(selectedShape) {
