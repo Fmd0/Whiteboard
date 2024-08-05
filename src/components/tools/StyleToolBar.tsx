@@ -39,7 +39,7 @@ const StyleToolBar = () => {
                            setStrokeStyleAndLineWidth(e.target.value, lineWidthState);
                            setGlobalStyleConfig({
                                strokeStyle: e.target.value,
-                               lineWidthState: lineWidthState,
+                               lineWidth: lineWidthState,
                            });
                            selectedShape!.styleConfig.strokeStyle = e.target.value;
                            repaint();

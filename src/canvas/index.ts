@@ -1,6 +1,7 @@
 import {ShapeStyleType, ShapeType} from "../utils/types.ts";
 import {repaint} from "./paint.ts";
 import {POINTER} from "../utils/data.ts";
+import {handlePointerDown} from "./pointerEvent.ts";
 
 
 // initialize global variables
@@ -73,7 +74,7 @@ export const setCanvasTranslate = (newTranslateX: number, newTranslateY: number)
 }
 
 
-// window.addEventListener('pointerdown', handlePointerDown);
+window.addEventListener('pointerdown', handlePointerDown);
 // window.addEventListener('pointermove', handlePointerMove);
 // window.addEventListener('pointerup', handlePointerUp);
 

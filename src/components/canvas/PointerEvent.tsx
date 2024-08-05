@@ -2,21 +2,21 @@ import {
     center,
     drawType, scale,
     selectedShape, setCanvasScale, setCanvasScaleCopy, setCanvasTranslate,
-    setSelectedShape,
     setShapeList,
     shapeList,
 } from "../../canvas";
 import {ELLIPSE, ERASER, LINE, LINEARPATH, POINTER, RECTANGLE} from "../../utils/data.ts";
-import {pointerPointerDown, pointerPointerMove} from "../../canvas/shape/pointer.ts";
-import {rectanglePointerDown, rectanglePointerMove, selectRectangle} from "../../canvas/shape/rectangle.ts";
-import {ellipsePointerDown, ellipsePointerMove, selectEllipse} from "../../canvas/shape/ellipse.ts";
-import {linePointerDown, linePointerMove, selectLine} from "../../canvas/shape/line.ts";
-import {linearPathPointerDown, linearPathPointerMove, selectLinearPath} from "../../canvas/shape/linearPath.ts";
-import {eraserPointerDown, eraserPointerMove} from "../../canvas/shape/eraser.ts";
+import {pointerPointerMove} from "../../canvas/shape/pointer.ts";
+import {rectanglePointerMove} from "../../canvas/shape/rectangle.ts";
+import {ellipsePointerMove} from "../../canvas/shape/ellipse.ts";
+import {linePointerMove} from "../../canvas/shape/line.ts";
+import {linearPathPointerMove} from "../../canvas/shape/linearPath.ts";
+import {eraserPointerMove} from "../../canvas/shape/eraser.ts";
 import {repaint} from "../../canvas/paint.ts";
 import {hasMoved, multiPointerMap} from "../../canvas/pointerEvent.ts";
 import {useCanvasInfoStore} from "../../hooks/useCanvasInfoStore.ts";
 import {useEffect} from "react";
+import {handleSelect} from "../../canvas/select.ts";
 
 
 const PointerEvent = () => {
@@ -26,28 +26,6 @@ const PointerEvent = () => {
         setStrokeStyleAndLineWidth,
         setScaleState
     } = useCanvasInfoStore();
-
-    const handlePointerDown = (event: PointerEvent) => {
-
-        if(multiPointerMap.size >= 2) {
-            return;
-        }
-
-        multiPointerMap.set(event.pointerId, {
-            isThrottle: false,
-            drawType,
-            usedForMultiPointer: false,
-        });
-
-        switch (drawType) {
-            case POINTER: pointerPointerDown(event); break;
-            case RECTANGLE: rectanglePointerDown(event); break;
-            case ELLIPSE: ellipsePointerDown(event); break;
-            case LINE: linePointerDown(event); break;
-            case LINEARPATH: linearPathPointerDown(event); break;
-            case ERASER: eraserPointerDown(event); break;
-        }
-    }
 
 
     const handlePointerMove = (() => {
@@ -121,6 +99,9 @@ const PointerEvent = () => {
             setTopAndLeft(selectedShape!);
             setStrokeStyleAndLineWidth(selectedShape.styleConfig.strokeStyle, selectedShape.styleConfig.lineWidth);
         }
+        else {
+            setIsDisplayed(false);
+        }
 
         if(pointerInfo.drawType!==POINTER && pointerInfo.drawType !== ERASER && pointerInfo.shape && hasMoved(pointerInfo.shape)) {
             shapeList.push(pointerInfo.shape);
@@ -138,28 +119,6 @@ const PointerEvent = () => {
         center.hasInitialized = false;
     }
 
-
-    const handleSelect = (event: PointerEvent) => {
-        try {
-            for(let i = shapeList.length-1; i >= 0; i--) {
-                switch (shapeList[i].type) {
-                    case RECTANGLE: selectRectangle(event, shapeList[i]); break;
-                    case ELLIPSE: selectEllipse(event, shapeList[i]); break;
-                    case LINE: selectLine(event, shapeList[i]); break;
-                    case LINEARPATH: selectLinearPath(event, shapeList[i]); break;
-                }
-            }
-            setSelectedShape(null);
-            setIsDisplayed(false);
-        }
-        catch (shape) {
-            setSelectedShape(shape);
-            setIsDisplayed(true);
-            setTopAndLeft(shape);
-            setStrokeStyleAndLineWidth(shape.styleConfig.strokeStyle, shape.styleConfig.lineWidth);
-        }
-        repaint();
-    }
 
     const handleMultiPointerEvent = (event: PointerEvent) => {
         let currentPointerInfo, anotherPointerInfo;
@@ -217,12 +176,10 @@ const PointerEvent = () => {
 
 
     useEffect(() => {
-        window.addEventListener('pointerdown', handlePointerDown);
         window.addEventListener('pointermove', handlePointerMove);
         window.addEventListener('pointerup', handlePointerUp);
 
         return () => {
-            window.removeEventListener('pointerdown', handlePointerDown);
             window.removeEventListener('pointermove', handlePointerMove);
             window.removeEventListener('pointerup', handlePointerUp);
         }

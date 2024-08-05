@@ -14,27 +14,27 @@ import {eraserPointerDown, eraserPointerMove} from "./shape/eraser.ts";
 
 export const multiPointerMap = new Map<number, PointerInfoType>();
 
-// export const handlePointerDown = (event: PointerEvent) => {
-//
-//     if(multiPointerMap.size >= 2) {
-//         return;
-//     }
-//
-//     multiPointerMap.set(event.pointerId, {
-//         isThrottle: false,
-//         drawType,
-//         usedForMultiPointer: false,
-//     });
-//
-//     switch (drawType) {
-//         case POINTER: pointerPointerDown(event); break;
-//         case RECTANGLE: rectanglePointerDown(event); break;
-//         case ELLIPSE: ellipsePointerDown(event); break;
-//         case LINE: linePointerDown(event); break;
-//         case LINEARPATH: linearPathPointerDown(event); break;
-//         case ERASER: eraserPointerDown(event); break;
-//     }
-// }
+export const handlePointerDown = (event: PointerEvent) => {
+
+    if(multiPointerMap.size >= 2) {
+        return;
+    }
+
+    multiPointerMap.set(event.pointerId, {
+        isThrottle: false,
+        drawType,
+        usedForMultiPointer: false,
+    });
+
+    switch (drawType) {
+        case POINTER: pointerPointerDown(event); break;
+        case RECTANGLE: rectanglePointerDown(event); break;
+        case ELLIPSE: ellipsePointerDown(event); break;
+        case LINE: linePointerDown(event); break;
+        case LINEARPATH: linearPathPointerDown(event); break;
+        case ERASER: eraserPointerDown(event); break;
+    }
+}
 //
 //
 // export const handlePointerMove = (() => {
