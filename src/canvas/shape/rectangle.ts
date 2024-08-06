@@ -193,16 +193,16 @@ const pointerMoveWhenRectangleSelected = (event: PointerEvent) => {
 }
 
 const normalizeRectangle = (shape: ShapeType) => {
-    if(shape.x > shape!.width) {
-        shape.x = shape.x ^ shape.width;
-        shape.width = shape.x ^ shape.width;
-        shape.x = shape.x ^ shape.width;
+    if(shape.x > shape.width!) {
+        shape.x = shape.x ^ shape.width!;
+        shape.width = shape.x ^ shape.width!;
+        shape.x = shape.x ^ shape.width!;
     }
 
-    if(shape.y > shape!.height) {
-        shape.y = shape.y ^ shape.height;
-        shape.height = shape.y ^ shape.height;
-        shape.y = shape.y ^ shape.height;
+    if(shape.y > shape.height!) {
+        shape.y = shape.y ^ shape.height!;
+        shape.height = shape.y ^ shape.height!;
+        shape.y = shape.y ^ shape.height!;
     }
 }
 

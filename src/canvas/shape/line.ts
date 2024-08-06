@@ -60,8 +60,8 @@ const selectLine = (event: PointerEvent, shape: ShapeType) => {
     const pointerY = (event.clientY-defaultTranslateY)/scale*100;
     const lineStartPointX = shape.x+shapeTranslateX;
     const lineStartPointY = shape.y+shapeTranslateY;
-    const lineEndPointX = shape.width+shapeTranslateX;
-    const lineEndPointY = shape.height+shapeTranslateY;
+    const lineEndPointX = shape!.width+shapeTranslateX;
+    const lineEndPointY = shape!.height+shapeTranslateY;
     const deviation = 10/scale*100;
 
     if(Math.abs(pointerX-(lineStartPointX+lineEndPointX)/2) <= Math.abs(lineStartPointX-lineEndPointX)/2+deviation &&

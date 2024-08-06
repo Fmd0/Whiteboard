@@ -11,7 +11,7 @@ const StyleToolBar = () => {
         top,
         strokeStyleState,
         lineWidthState,
-        setStrokeStyleAndLineWidth
+        setStrokeStyleStateAndLineWidthState
     } = useCanvasInfoStore();
 
     return (
@@ -36,7 +36,7 @@ const StyleToolBar = () => {
                 <input type="color"
                        className="cursor-pointer absolute left-0 top-0 w-full h-full rounded-[999px] opacity-0"
                        onChange={(e) => {
-                           setStrokeStyleAndLineWidth(e.target.value, lineWidthState);
+                           setStrokeStyleStateAndLineWidthState(e.target.value, lineWidthState);
                            setGlobalStyleConfig({
                                strokeStyle: e.target.value,
                                lineWidth: lineWidthState,
@@ -56,7 +56,7 @@ const StyleToolBar = () => {
                 [2, 4, 8].map(item => (
                     <div key={item} className={`cursor-pointer size-9 rounded-[999px] grid place-items-center bg-[#DEDFE0] duration-200 outline-none outline-offset-0 ${lineWidthState === item ? "outline outline-[#2B5EDA] outline-[1.5px]" : "hover:outline hover:outline-[#2B5EDA] hover:outline-[1.5px]"}`}
                         onClick={() => {
-                            setStrokeStyleAndLineWidth(strokeStyleState, item);
+                            setStrokeStyleStateAndLineWidthState(strokeStyleState, item);
                             setGlobalStyleConfig({
                                 strokeStyle: strokeStyleState,
                                 lineWidth: item,

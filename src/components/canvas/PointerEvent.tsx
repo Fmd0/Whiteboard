@@ -23,7 +23,7 @@ const PointerEvent = () => {
     const {
         setIsDisplayed,
         setTopAndLeft,
-        setStrokeStyleAndLineWidth,
+        setStrokeStyleStateAndLineWidthState,
         setScaleState
     } = useCanvasInfoStore();
 
@@ -97,7 +97,7 @@ const PointerEvent = () => {
         if(pointerInfo.drawType===POINTER && selectedShape) {
             setIsDisplayed(true);
             setTopAndLeft(selectedShape!);
-            setStrokeStyleAndLineWidth(selectedShape.styleConfig.strokeStyle, selectedShape.styleConfig.lineWidth);
+            setStrokeStyleStateAndLineWidthState(selectedShape.styleConfig.strokeStyle, selectedShape.styleConfig.lineWidth);
         }
         else {
             setIsDisplayed(false);

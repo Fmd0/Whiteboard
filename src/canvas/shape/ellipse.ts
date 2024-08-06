@@ -20,10 +20,10 @@ const paintEllipse = (shape: ShapeType) => {
     ctx.beginPath();
 
     ctx.ellipse(
-        (shape.x+shape.width)/2+shapeTranslateX,
-        (shape.y+shape.height)/2+shapeTranslateY,
-        Math.abs(shape.x-shape.width)/2,
-        Math.abs(shape.y-shape.height)/2,
+        (shape.x+shape!.width)/2+shapeTranslateX,
+        (shape.y+shape!.height)/2+shapeTranslateY,
+        Math.abs(shape.x-shape!.width)/2,
+        Math.abs(shape.y-shape!.height)/2,
         0,
         0,
         2*Math.PI,

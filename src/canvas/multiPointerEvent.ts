@@ -1,9 +1,9 @@
-import {multiPointerMap} from "./pointerEvent.ts";
-import {
-    center,
-    scale,
-    setCanvasScale, setCanvasTranslate,
-} from "./index.ts";
+// import {multiPointerMap} from "./pointerEvent.ts";
+// import {
+//     center,
+//     scale,
+//     setCanvasScale, setCanvasTranslate,
+// } from "./index.ts";
 
 
 // export const handleMultiPointerEvent = (event: PointerEvent) => {

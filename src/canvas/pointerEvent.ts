@@ -1,15 +1,12 @@
 import {ELLIPSE, ERASER, LINE, LINEARPATH, POINTER, RECTANGLE} from "../utils/data.ts";
-import {pointerPointerDown, pointerPointerMove} from "./shape/pointer.ts";
-import {rectanglePointerDown, rectanglePointerMove} from "./shape/rectangle.ts";
-import {ellipsePointerDown, ellipsePointerMove} from "./shape/ellipse.ts";
-import {linePointerDown, linePointerMove} from "./shape/line.ts";
-import {linearPathPointerDown, linearPathPointerMove} from "./shape/linearPath.ts";
-import {shapeList, drawType, center, setShapeList} from "./index.ts";
-import {repaint} from "./paint.ts";
+import {pointerPointerDown} from "./shape/pointer.ts";
+import {rectanglePointerDown} from "./shape/rectangle.ts";
+import {ellipsePointerDown} from "./shape/ellipse.ts";
+import {linePointerDown} from "./shape/line.ts";
+import {linearPathPointerDown} from "./shape/linearPath.ts";
+import {drawType} from "./index.ts";
 import {PointerInfoShapeType, PointerInfoType} from "../utils/types.ts";
-import {handleMultiPointerEvent} from "./multiPointerEvent.ts";
-import {handleSelect} from "./select.ts";
-import {eraserPointerDown, eraserPointerMove} from "./shape/eraser.ts";
+import {eraserPointerDown} from "./shape/eraser.ts";
 
 
 export const multiPointerMap = new Map<number, PointerInfoType>();
@@ -125,8 +122,8 @@ export const hasMoved = (pointerInfo: PointerInfoShapeType) => {
     }
 
     const deviation = (
-        (pointerInfo.x-pointerInfo.width) ** 2 +
-        (pointerInfo.y-pointerInfo.height) ** 2
+        (pointerInfo.x-pointerInfo.width!) ** 2 +
+        (pointerInfo.y-pointerInfo.height!) ** 2
     ) ** 0.5;
 
     return deviation > 5;

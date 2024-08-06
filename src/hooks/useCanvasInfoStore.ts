@@ -44,14 +44,14 @@ export const useCanvasInfoStore = create<State & Action>((set) => ({
     setTop: (top) => set({top}),
     setLeft: (left) => set({left}),
     setTopAndLeft: (shape: ShapeType) => {
-        const clientX = ((shape.x+shape.width)/2+shapeTranslateX)/100*scale+defaultTranslateX;
-        const clientY = ((shape.y+shape.height)/2+shapeTranslateY)/100*scale+defaultTranslateY;
-        const height = Math.abs(shape.y-shape.height)/100*scale;
+        const clientX = ((shape.x+shape.width!)/2+shapeTranslateX)/100*scale+defaultTranslateX;
+        const clientY = ((shape.y+shape.height!)/2+shapeTranslateY)/100*scale+defaultTranslateY;
+        const height = Math.abs(shape.y-shape.height!)/100*scale;
         set(state => {
             state.setTop(clientY-height/2);
             state.setLeft(clientX);
             return {};
         })
     },
-    setStrokeStyleAndLineWidth: (strokeStyleState, lineWidthState) => set({strokeStyleState, lineWidthState}),
+    setStrokeStyleStateAndLineWidthState: (strokeStyleState, lineWidthState) => set({strokeStyleState, lineWidthState}),
 }))

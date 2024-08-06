@@ -6,6 +6,7 @@ import {repaint} from "./paint.ts";
 import {selectEllipse} from "./shape/ellipse.ts";
 import {selectLine} from "./shape/line.ts";
 import {selectLinearPath} from "./shape/linearPath.ts";
+import {ShapeType} from "../utils/types.ts";
 
 
 export const handleSelect = (event: PointerEvent) => {
@@ -21,8 +22,8 @@ export const handleSelect = (event: PointerEvent) => {
         setSelectedShape(null);
         // console.log(false);
     }
-    catch (shape) {
-        setSelectedShape(shape);
+    catch (shape: ShapeType) {
+        setSelectedShape(shape!);
         // console.log(JSON.stringify(shape));
     }
     repaint();

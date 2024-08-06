@@ -54,7 +54,7 @@ export const pointerPointerMove = (event: PointerEvent) => {
     else {
         setCanvasTranslate(
             event.clientX-pointerInfo.shape!.width,
-            event.clientY-pointerInfo.shape!.height
+            event.clientY-pointerInfo.shape!.height!,
         );
     }
 

@@ -130,8 +130,8 @@ const eraseEllipse = (erase: LinearPathType, shape: ShapeType) => {
 const eraseLine = (erase: LinearPathType, shape: ShapeType) => {
     const lineStartPointX = shape.x+shapeTranslateX;
     const lineStartPointY = shape.y+shapeTranslateY;
-    const lineEndPointX = shape.width+shapeTranslateX;
-    const lineEndPointY = shape.height+shapeTranslateY;
+    const lineEndPointX = shape!.width+shapeTranslateX;
+    const lineEndPointY = shape!.height+shapeTranslateY;
     const deviation = ERASER_WIDTH/scale*100/2;
 
     const eraserPointX = erase.x + shapeTranslateX;
@@ -154,8 +154,8 @@ const eraseLinearPath = (erase: LinearPathType, shape: ShapeType) => {
     const eraserPointY = erase.y + shapeTranslateY;
     const deviation = ERASER_WIDTH/scale*100;
 
-    if(eraserPointX<shape.x+shapeTranslateX-deviation || eraserPointX>shape.width+shapeTranslateX+deviation ||
-    eraserPointY<shape.y+shapeTranslateY-deviation || eraserPointY>shape.height+shapeTranslateY+deviation) {
+    if(eraserPointX<shape.x+shapeTranslateX-deviation || eraserPointX>shape!.width+shapeTranslateX+deviation ||
+    eraserPointY<shape.y+shapeTranslateY-deviation || eraserPointY>shape!.height+shapeTranslateY+deviation) {
         return;
     }
 

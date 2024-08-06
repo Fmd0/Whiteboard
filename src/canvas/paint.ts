@@ -78,7 +78,7 @@ const drawBackground = () => {
         ctx.lineTo(rowHalfLength, i);
     }
 
-    ctx.lineWidth = backgroundGridGapWidthMap[currentBackgroundGridGap];
+    ctx.lineWidth = backgroundGridGapWidthMap[String(currentBackgroundGridGap)];
     ctx.strokeStyle = CANVAS_GRID_COLOR;
     ctx.stroke();
     ctx.closePath();

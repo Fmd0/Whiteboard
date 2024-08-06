@@ -1,5 +1,5 @@
-import {scale, setCanvasScale, setCanvasTranslate} from "./index.ts";
-import {repaint} from "./paint.ts";
+// import {scale, setCanvasScale, setCanvasTranslate} from "./index.ts";
+// import {repaint} from "./paint.ts";
 
 
 // export const handleWheel = (() => {
